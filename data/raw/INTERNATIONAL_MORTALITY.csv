@@ -1,0 +1,163 @@
+entity,code,year,deaths_count
+Afghanistan,AFG,2019,110
+Albania,ALB,2019,1
+Algeria,DZA,2019,9.4
+Andorra,AND,2019,1
+Angola,AGO,2019,87
+Argentina,ARG,2019,3.2
+Armenia,ARM,2019,1
+Australia,AUS,2019,1.3
+Austria,AUT,2019,1
+Azerbaijan,AZE,2019,1
+Bahrain,BHR,2019,1
+Bangladesh,BGD,2019,1170
+Belarus,BLR,2019,1.2
+Belgium,BEL,2019,1
+Belize,BLZ,2019,1
+Benin,BEN,2019,108
+Bhutan,BTN,2019,8.3
+Bolivia,BOL,2019,14
+Bosnia and Herzegovina,BIH,2019,1
+Botswana,BWA,2019,6.5
+Brazil,BRA,2019,233
+Brunei,BRN,2019,1
+Bulgaria,BGR,2019,1
+Burkina Faso,BFA,2019,279
+Burundi,BDI,2019,102
+Cambodia,KHM,2019,1.7
+Cameroon,CMR,2019,264
+Canada,CAN,2019,1
+Central African Republic,CAF,2019,97
+Chad,TCD,2019,236
+China,CHN,2019,223
+Colombia,COL,2019,50
+Congo,COG,2019,40
+Costa Rica,CRI,2019,3.9
+Cote d'Ivoire,CIV,2019,256
+Croatia,HRV,2019,1
+Cyprus,CYP,2019,1
+Czechia,CZE,2019,1.2
+Democratic Republic of Congo,COD,2019,545
+Denmark,DNK,2019,1
+Djibouti,DJI,2019,7.1
+East Timor,TLS,2019,1.7
+Ecuador,ECU,2019,24
+Egypt,EGY,2019,10
+El Salvador,SLV,2019,1.3
+Equatorial Guinea,GNQ,2019,5.7
+Eritrea,ERI,2019,73
+Estonia,EST,2019,1
+Eswatini,SWZ,2019,2.3
+Ethiopia,ETH,2019,499
+Finland,FIN,2019,1
+France,FRA,2019,2.3
+Gabon,GAB,2019,17
+Gambia,GMB,2019,9.4
+Georgia,GEO,2019,1
+Germany,DEU,2019,2.5
+Ghana,GHA,2019,245
+Greece,GRC,2019,1
+Guatemala,GTM,2019,10
+Guinea,GIN,2019,191
+Guinea-Bissau,GNB,2019,16
+Guyana,GUY,2019,8.6
+Honduras,HND,2019,5.3
+Hungary,HUN,2019,1
+India,IND,2019,51100
+Indonesia,IDN,2019,149
+Iran,IRN,2019,42
+Iraq,IRQ,2019,13
+Israel,ISR,2019,1
+Italy,ITA,2019,2.8
+Japan,JPN,2019,2.4
+Jordan,JOR,2019,2.1
+Kazakhstan,KAZ,2019,2.5
+Kenya,KEN,2019,349
+Kuwait,KWT,2019,1
+Kyrgyzstan,KGZ,2019,1
+Laos,LAO,2019,21
+Latvia,LVA,2019,1
+Lebanon,LBN,2019,1
+Lesotho,LSO,2019,1
+Liberia,LBR,2019,42
+Libya,LBY,2019,2.2
+Lithuania,LTU,2019,1
+Luxembourg,LUX,2019,1
+Malawi,MWI,2019,69
+Malaysia,MYS,2019,36
+Mali,MLI,2019,234
+Mauritania,MRT,2019,13
+Mexico,MEX,2019,69
+Moldova,MDA,2019,1
+Mongolia,MNG,2019,1
+Montenegro,MNE,2019,1
+Morocco,MAR,2019,17
+Mozambique,MOZ,2019,102
+Myanmar,MMR,2019,171
+Namibia,NAM,2019,4.5
+Nepal,NPL,2019,234
+Netherlands,NLD,2019,1
+Nicaragua,NIC,2019,7.9
+Niger,NER,2019,228
+Nigeria,NGA,2019,1460
+North Korea,PRK,2019,6
+North Macedonia,MKD,2019,1
+Norway,NOR,2019,1
+Oceania,OWID_OCE,2019,69
+Oman,OMN,2019,1
+Pakistan,PAK,2019,2070
+Palestine,PSE,2019,1
+Panama,PAN,2019,14
+Papua New Guinea,PNG,2019,69
+Paraguay,PRY,2019,6.3
+Peru,PER,2019,9.4
+Philippines,PHL,2019,91
+Poland,POL,2019,1
+Portugal,PRT,2019,1
+Qatar,QAT,2019,1
+Romania,ROU,2019,1
+Russia,RUS,2019,16
+Rwanda,RWA,2019,47
+Saint Lucia,LCA,2019,1
+San Marino,SMR,2019,1
+Sao Tome and Principe,STP,2019,1
+Saudi Arabia,SAU,2019,9.8
+Senegal,SEN,2019,77
+Serbia,SRB,2019,1
+Sierra Leone,SLE,2019,90
+Singapore,SGP,2019,1
+Slovakia,SVK,2019,1
+Slovenia,SVN,2019,1
+Somalia,SOM,2019,317
+South Africa,ZAF,2019,20
+South Korea,KOR,2019,6.4
+South Sudan,SSD,2019,102
+Spain,ESP,2019,1.9
+Sri Lanka,LKA,2019,52
+Sudan,SDN,2019,86
+Suriname,SUR,2019,2
+Sweden,SWE,2019,1
+Switzerland,CHE,2019,1
+Syria,SYR,2019,2.1
+Taiwan,TWN,2019,1.2
+Tajikistan,TJK,2019,1
+Tanzania,TZA,2019,211
+Thailand,THA,2019,134
+Togo,TGO,2019,70
+Trinidad and Tobago,TTO,2019,1
+Tunisia,TUN,2019,2.2
+Turkey,TUR,2019,3.6
+Turkmenistan,TKM,2019,1
+Uganda,UGA,2019,137
+Ukraine,UKR,2019,4.5
+United Arab Emirates,ARE,2019,2.8
+United Kingdom,GBR,2019,1
+United States,USA,2019,17
+Uruguay,URY,2019,1
+Uzbekistan,UZB,2019,2.8
+Venezuela,VEN,2019,48
+Vietnam,VNM,2019,143
+World,OWID_WRL,2019,63400
+Yemen,YEM,2019,36
+Zambia,ZMB,2019,88
+Zimbabwe,ZWE,2019,36

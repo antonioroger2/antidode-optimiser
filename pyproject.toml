@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "antidote-optimiser"
+version = "1.0.0"
+description = "Global Snakebite Hazard & Antidote Logistics Operations Research Optimizer"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Antidote Optimization Contributors" }
+]
+keywords = [
+    "operations-research",
+    "gis",
+    "antivenom",
+    "healthcare-logistics",
+    "facility-location",
+    "p-median",
+    "flask",
+    "who"
+]
+dependencies = [
+    "flask>=2.3.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "shapely>=2.0.0",
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+    "tqdm>=4.66.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

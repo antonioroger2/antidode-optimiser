@@ -1,0 +1,19 @@
+# Web Framework & REST API
+flask>=2.3.0
+
+# Numerical Computing & Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Planar GIS & Spatial Geometry
+shapely>=2.0.0
+
+# HTTP Networking & REST API Extraction
+requests>=2.31.0
+urllib3>=2.0.0
+
+# Progress Tracking
+tqdm>=4.66.0
+
+# Unit & Integration Testing
+pytest>=7.4.0

@@ -1,0 +1,59 @@
+# ==============================================================================
+# Git Ignore Configuration: Antidote & Antivenom Logistics Optimizer
+# ==============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution & Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# Editor & IDE artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Large Generated Databases & Binary Files (> 100 MB)
+# Note: SQLite database is generated on-the-fly via optimise/db.py
+*.db
+*.sqlite
+snakebite_optimizer.db
+optimise/snakebite_optimizer.db
+
+# Large uncompressed master CSV (> 100 MB)
+# Note: tracked safely in git via data/processed/GLOBAL_SNAKE_ANTIVENOM_DISTRICT_OPTIMIZATION_MASTER.csv.gz (5.9 MB)
+GLOBAL_SNAKE_ANTIVENOM_DISTRICT_OPTIMIZATION_MASTER.csv
+data/processed/GLOBAL_SNAKE_ANTIVENOM_DISTRICT_OPTIMIZATION_MASTER.csv
+
+# Temporary scratch & logs
+*.log
+scratch/
+.system_generated/

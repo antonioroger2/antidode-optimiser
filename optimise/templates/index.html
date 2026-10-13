@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOAD: Global Antivenom Optimization & Emergency Dispatch System</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet GIS Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --bg-base: #06090e;
+            --bg-surface: #0c121e;
+            --bg-surface-elevated: #131b2e;
+            --border-color: #1e293b;
+            --border-glow: rgba(56, 189, 248, 0.3);
+            
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --accent-purple: #a855f7;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .brand-title {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            background: rgba(12, 18, 30, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-surface);
+            padding: 0.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            gap: 0.25rem;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1.15rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-tab.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Main Container Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            flex: 1;
+            height: calc(100vh - 65px);
+        }
+
+        /* Left Control Panel */
+        .control-panel {
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        /* Right Map Viewport */
+        .map-viewport {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            background: #000;
+        }
+
+        #gis-map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Card Elements */
+        .glass-card {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            color: white;
+            box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+        }
+
+        /* Danger Score Badges */
+        .danger-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .badge-cat1 {
+            background: rgba(244, 63, 94, 0.15);
+            color: #fb7185;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .badge-cat2 {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-danger {
+            background: rgba(244, 63, 94, 0.2);
+            color: #fda4af;
+            border: 1px solid rgba(244, 63, 94, 0.4);
+        }
+
+        /* Species List Item */
+        .species-item {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.85rem;
+            margin-bottom: 0.65rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .species-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .species-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.4rem;
+        }
+
+        .species-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+            font-style: italic;
+        }
+
+        .species-common {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: normal;
+        }
+
+        .score-pill {
+            background: #1e1b4b;
+            color: #818cf8;
+            border: 1px solid #3730a3;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        .species-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+            font-size: 0.74rem;
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Quick Stat Mini-Cards */
+        .stat-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.65rem;
+        }
+
+        .stat-mini-card {
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-mini-val {
+            font-size: 1.3rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary);
+        }
+
+        .stat-mini-lbl {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Map Overlay HUD */
+        .map-hud {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(12, 18, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.85rem 1.25rem;
+            z-index: 1000;
+            display: flex;
+            gap: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .hud-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .hud-value {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+        <div class="brand-container">
+            <div class="brand-logo">
+                <i class="fa-solid fa-staff-snake"></i>
+            </div>
+            <div>
+                <div class="brand-title">ANTIVENOM GOAD</div>
+                <div class="brand-subtitle">Geospatial Optimization & Antivenom Dispatch</div>
+            </div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" id="tab-species-btn" onclick="switchTab('species')">
+                <i class="fa-solid fa-dragon"></i> Species & Threat Profiler
+            </button>
+            <button class="nav-tab" id="tab-patient-btn" onclick="switchTab('patient')">
+                <i class="fa-solid fa-truck-medical"></i> Patient Emergency Triage
+            </button>
+            <button class="nav-tab" id="tab-optimizer-btn" onclick="switchTab('optimizer')">
+                <i class="fa-solid fa-network-wired"></i> Stockroom Optimizer
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Application Split Screen -->
+    <main class="main-container">
+
+        <!-- Left Interactive Control Panel -->
+        <aside class="control-panel" id="control-panel">
+
+            <!-- MODE 1: SPECIES & DANGER PROFILER -->
+            <div id="panel-species">
+                <div class="glass-card" style="margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--primary);">
+                        <i class="fa-solid fa-map-location-dot"></i> District Hazard Lookup
+                    </h3>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-globe"></i> Country</label>
+                        <select class="form-select" id="species-country-select" onchange="loadDistrictsForSpecies()">
+                            <option value="India">India</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-location-crosshairs"></i> District / City</label>
+                        <select class="form-select" id="species-district-select" onchange="fetchDistrictSpecies()">
+                            <option value="">Select District...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="species-results-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                        <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">
+                            Venomous Species Present in District
+                        </h4>
+                        <span class="score-pill" id="species-count-badge">0 Species</span>
+                    </div>
+                    <div id="species-list-content">
+                        <p style="color: var(--text-dim); font-size: 0.8rem; text-align: center; padding: 2rem 0;">
+                            Select a country and district to view danger rankings and antivenom coverage.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODE 2: PATIENT EMERGENCY TRIAGE -->
+            <div id="panel-patient" style="display: none;">
+                <div class="glass-card" style="margin-bottom: 1rem; border-color: rgba(244, 63, 94, 0.4);">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--accent-rose);">
+                        <i class="fa-solid fa-heart-pulse"></i> Patient Envenomation Triage
+                    </h3>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-globe"></i> Country</label>
+                        <select class="form-select" id="patient-country-select" onchange="loadDistrictsForPatient()">
+                            <option value="India">India</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-location-dot"></i> Patient District</label>
+                        <select class="form-select" id="patient-district-select" onchange="loadSpeciesForPatient()">
+                            <option value="">Select District...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-snake"></i> Biting Snake Species</label>
+                        <select class="form-select" id="patient-species-select">
+                            <option value="">Select Species...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-clock"></i> Hours Elapsed Since Bite</label>
+                        <input type="number" class="form-input" id="patient-hours-input" min="0.1" max="24" step="0.5" value="1.0">
+                    </div>
+                    <button class="btn-action btn-danger" onclick="runPatientEmergencyTriage()">
+                        <i class="fa-solid fa-route"></i> Calculate Triage & Route
+                    </button>
+                </div>
+
+                <div id="patient-triage-output" style="display: none;">
+                    <!-- Triage Dynamic Card -->
+                </div>
+            </div>
+
+            <!-- MODE 3: STOCKROOM LOCATION OPTIMIZER -->
+            <div id="panel-optimizer" style="display: none;">
+                <div class="glass-card" style="margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--accent-emerald);">
+                        <i class="fa-solid fa-boxes-stacked"></i> OR p-Median Optimizer
+                    </h3>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-globe"></i> Target Country</label>
+                        <select class="form-select" id="optimizer-country-select">
+                            <option value="India">India</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-warehouse"></i> Number of Cold-Chain Hubs ($p$)</label>
+                        <input type="number" class="form-input" id="optimizer-k-hubs" min="1" max="30" value="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-hourglass-half"></i> Golden Hour Limit (Hours)</label>
+                        <input type="number" class="form-input" id="optimizer-max-time" min="0.5" max="6" step="0.5" value="2.0">
+                    </div>
+                    <button class="btn-action btn-primary" onclick="runStockroomOptimization()">
+                        <i class="fa-solid fa-bolt"></i> Solve Optimal Hub Locations
+                    </button>
+                </div>
+
+                <div id="optimizer-results-output" style="display: none;">
+                    <!-- Optimizer Dynamic Output -->
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Right Leaflet Map -->
+        <section class="map-viewport">
+            <div id="gis-map"></div>
+
+            <!-- Map Floating HUD -->
+            <div class="map-hud" id="map-hud">
+                <div class="hud-item">
+                    <span class="hud-label">Active Region</span>
+                    <span class="hud-value" id="hud-region">Global</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Districts Active</span>
+                    <span class="hud-value" id="hud-districts" style="color: var(--primary);">41,053</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Species Tracked</span>
+                    <span class="hud-value" id="hud-species" style="color: var(--accent-emerald);">373</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Global Map Instance
+        let map;
+        let markersLayer;
+        let routeLayer;
+
+        // Initialize Map on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadCountries();
+        });
+
+        function initMap() {
+            map = L.map('gis-map', {
+                center: [20.5937, 78.9629],
+                zoom: 5,
+                zoomControl: false
+            });
+
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+            // Dark CartoDB Tiles
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO &copy; WHO',
+                maxZoom: 19
+            }).addTo(map);
+
+            markersLayer = L.layerGroup().addTo(map);
+            routeLayer = L.layerGroup().addTo(map);
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${tabId}-btn`).classList.add('active');
+
+            document.getElementById('panel-species').style.display = tabId === 'species' ? 'block' : 'none';
+            document.getElementById('panel-patient').style.display = tabId === 'patient' ? 'block' : 'none';
+            document.getElementById('panel-optimizer').style.display = tabId === 'optimizer' ? 'block' : 'none';
+
+            markersLayer.clearLayers();
+            routeLayer.clearLayers();
+        }
+
+        // Load Countries Dropdown
+        async function loadCountries() {
+            try {
+                const res = await fetch('/api/countries');
+                const countries = await res.json();
+                
+                const speciesSelect = document.getElementById('species-country-select');
+                const patientSelect = document.getElementById('patient-country-select');
+                const optSelect = document.getElementById('optimizer-country-select');
+
+                speciesSelect.innerHTML = '';
+                patientSelect.innerHTML = '';
+                optSelect.innerHTML = '';
+
+                countries.forEach(c => {
+                    const opt1 = new Option(`${c.COUNTRY_NAME} (${c.district_count} dist)`, c.COUNTRY_NAME);
+                    const opt2 = new Option(c.COUNTRY_NAME, c.COUNTRY_NAME);
+                    const opt3 = new Option(c.COUNTRY_NAME, c.COUNTRY_NAME);
+                    if (c.COUNTRY_NAME === 'India') {
+                        opt1.selected = true;
+                        opt2.selected = true;
+                        opt3.selected = true;
+                    }
+                    speciesSelect.add(opt1);
+                    patientSelect.add(opt2);
+                    optSelect.add(opt3);
+                });
+
+                loadDistrictsForSpecies();
+                loadDistrictsForPatient();
+            } catch (err) {
+                console.error("Error loading countries:", err);
+            }
+        }
+
+        // Load Districts for Species Profiler
+        async function loadDistrictsForSpecies() {
+            const country = document.getElementById('species-country-select').value;
+            const res = await fetch(`/api/districts?country=${encodeURIComponent(country)}`);
+            const districts = await res.json();
+
+            const dSelect = document.getElementById('species-district-select');
+            dSelect.innerHTML = '<option value="">Select District...</option>';
+            districts.forEach(d => {
+                dSelect.add(new Option(`${d.DISTRICT_NAME} (${d.STATE_NAME})`, d.DISTRICT_NAME));
+            });
+
+            // Default to first district if exists
+            if (districts.length > 0) {
+                dSelect.selectedIndex = 1;
+                fetchDistrictSpecies();
+            }
+        }
+
+        // Fetch Species & Danger Ranking for District
+        async function fetchDistrictSpecies() {
+            const country = document.getElementById('species-country-select').value;
+            const district = document.getElementById('species-district-select').value;
+            if (!district) return;
+
+            const res = await fetch(`/api/species_by_district?country=${encodeURIComponent(country)}&district=${encodeURIComponent(district)}`);
+            const data = await res.json();
+
+            document.getElementById('species-count-badge').textContent = `${data.total_species} Species`;
+            document.getElementById('hud-region').textContent = `${district}, ${country}`;
+            document.getElementById('hud-species').textContent = data.total_species;
+
+            const listContainer = document.getElementById('species-list-content');
+            listContainer.innerHTML = '';
+
+            markersLayer.clearLayers();
+
+            if (data.species.length > 0) {
+                const first = data.species[0];
+                if (first.CENTER_LAT && first.CENTER_LON) {
+                    map.flyTo([first.CENTER_LAT, first.CENTER_LON], 8, { duration: 1.5 });
+                    L.circleMarker([first.CENTER_LAT, first.CENTER_LON], {
+                        radius: 8,
+                        color: '#38bdf8',
+                        fillColor: '#0ea5e9',
+                        fillOpacity: 0.8
+                    }).addTo(markersLayer).bindPopup(`<b>${district}</b><br>${country}`).openPopup();
+                }
+            }
+
+            data.species.forEach(sp => {
+                const isCat1 = sp.MEDICAL_IMPORTANCE_CATEGORY.includes('Highest');
+                const catBadge = isCat1 ? '<span class="danger-badge badge-cat1">Category 1</span>' : '<span class="danger-badge badge-cat2">Category 2</span>';
+                
+                let asvBadge = '<span class="danger-badge badge-success">Neutralized</span>';
+                if (sp.ANTIVENOM_EFFICACY_STATUS.includes('Deficit') || sp.ANTIVENOM_EFFICACY_STATUS.includes('Poor') || sp.ANTIVENOM_EFFICACY_STATUS.includes('Unneutralized')) {
+                    asvBadge = '<span class="danger-badge badge-danger">Efficacy Deficit</span>';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'species-item';
+                card.innerHTML = `
+                    <div class="species-header">
+                        <div>
+                            <div class="species-title">#${sp.DANGER_RANK} ${sp.SCIENTIFIC_NAME}</div>
+                            <div class="species-common">${sp.COMMON_NAME} (${sp.FAMILY})</div>
+                        </div>
+                        <span class="score-pill">Hazard: ${sp.DANGER_SCORE}/100</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; margin: 0.35rem 0;">
+                        ${catBadge}
+                        ${asvBadge}
+                    </div>
+                    <div class="species-stats-grid">
+                        <div><i class="fa-solid fa-skull"></i> Untreated CFR: <b>${sp.Untreated_Case_Fatality_Rate_Pct}%</b></div>
+                        <div><i class="fa-solid fa-syringe"></i> Treated CFR: <b>${sp.Treated_Case_Fatality_Rate_Pct}%</b></div>
+                        <div><i class="fa-solid fa-map"></i> Habitat Overlap: <b>${sp.SPECIES_DISTRICT_OVERLAP_PCT}%</b></div>
+                        <div><i class="fa-solid fa-vial"></i> Dose: <b>${sp.Standard_Antivenom_Vials_Required} vials</b></div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.4rem;">
+                        <i class="fa-solid fa-prescription-bottle-medical"></i> <i>${sp.RECOMMENDED_ANTIVENOM_NAME}</i>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Load Patient Mode Dropdowns
+        async function loadDistrictsForPatient() {
+            const country = document.getElementById('patient-country-select').value;
+            const res = await fetch(`/api/districts?country=${encodeURIComponent(country)}`);
+            const districts = await res.json();
+
+            const dSelect = document.getElementById('patient-district-select');
+            dSelect.innerHTML = '<option value="">Select District...</option>';
+            districts.forEach(d => {
+                dSelect.add(new Option(`${d.DISTRICT_NAME} (${d.STATE_NAME})`, d.DISTRICT_NAME));
+            });
+
+            if (districts.length > 0) {
+                dSelect.selectedIndex = 1;
+                loadSpeciesForPatient();
+            }
+        }
+
+        async function loadSpeciesForPatient() {
+            const country = document.getElementById('patient-country-select').value;
+            const district = document.getElementById('patient-district-select').value;
+            if (!district) return;
+
+            const res = await fetch(`/api/species_by_district?country=${encodeURIComponent(country)}&district=${encodeURIComponent(district)}`);
+            const data = await res.json();
+
+            const spSelect = document.getElementById('patient-species-select');
+            spSelect.innerHTML = '';
+            data.species.forEach(sp => {
+                spSelect.add(new Option(`${sp.SCIENTIFIC_NAME} (${sp.COMMON_NAME})`, sp.SCIENTIFIC_NAME));
+            });
+        }
+
+        // Run Emergency Triage & Route Calculation
+        async function runPatientEmergencyTriage() {
+            const country = document.getElementById('patient-country-select').value;
+            const district = document.getElementById('patient-district-select').value;
+            const species = document.getElementById('patient-species-select').value;
+            const hours = parseFloat(document.getElementById('patient-hours-input').value) || 1.0;
+
+            const res = await fetch('/api/patient_emergency', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ country, district, species, hours_since_bite: hours })
+            });
+            const data = await res.json();
+
+            markersLayer.clearLayers();
+            routeLayer.clearLayers();
+
+            const pLat = data.patient_location.lat;
+            const pLon = data.patient_location.lon;
+
+            // Mark Patient Location
+            const patientMarker = L.marker([pLat, pLon], {
+                icon: L.divIcon({
+                    className: 'custom-div-icon',
+                    html: '<div style="background-color:#f43f5e;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 0 15px #f43f5e;"></div>',
+                    iconSize: [16, 16]
+                })
+            }).addTo(markersLayer).bindPopup(`<b>Patient Emergency Location</b><br>${district}, ${country}`);
+
+            // Nearest Hub
+            if (data.nearest_stockrooms.length > 0) {
+                const hub = data.nearest_stockrooms[0];
+                const hubMarker = L.marker([hub.lat, hub.lon], {
+                    icon: L.divIcon({
+                        className: 'custom-div-icon',
+                        html: '<div style="background-color:#10b981;width:18px;height:18px;border-radius:50%;border:3px solid white;box-shadow:0 0 15px #10b981;"></div>',
+                        iconSize: [18, 18]
+                    })
+                }).addTo(markersLayer).bindPopup(`<b>Nearest Stockroom Hub</b><br>${hub.hub_name}<br>ETA: ${hub.travel_time_minutes} mins`);
+
+                // Draw Transit Vector
+                L.polyline([[pLat, pLon], [hub.lat, hub.lon]], {
+                    color: '#38bdf8',
+                    weight: 4,
+                    dashArray: '8, 8',
+                    opacity: 0.85
+                }).addTo(routeLayer);
+
+                map.fitBounds([[pLat, pLon], [hub.lat, hub.lon]], { padding: [60, 60] });
+            }
+
+            // Render Triage Output Card
+            const outputDiv = document.getElementById('patient-triage-output');
+            outputDiv.style.display = 'block';
+
+            let statusColor = '#10b981';
+            if (data.triage_status === 'URGENT_WINDOW') statusColor = '#f59e0b';
+            if (data.triage_status === 'CRITICAL_WINDOW') statusColor = '#f43f5e';
+
+            outputDiv.innerHTML = `
+                <div class="glass-card" style="border-color: ${statusColor};">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <span class="danger-badge" style="background: ${statusColor}22; color: ${statusColor}; border: 1px solid ${statusColor};">
+                            <i class="fa-solid fa-bell"></i> ${data.triage_status}
+                        </span>
+                        <span style="font-size: 0.8rem; font-weight: 700;">Total Delay: ${data.total_delay_hours} hrs</span>
+                    </div>
+
+                    <p style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 0.85rem; line-height: 1.4;">
+                        ${data.triage_message}
+                    </p>
+
+                    <div class="stat-mini-grid" style="margin-bottom: 0.85rem;">
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-val" style="color: var(--accent-rose);">${data.initial_vials_required}</div>
+                            <div class="stat-mini-lbl">Initial Vials Req.</div>
+                        </div>
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-val" style="color: var(--primary);">${data.nearest_stockrooms[0].travel_time_minutes} m</div>
+                            <div class="stat-mini-lbl">Ambulance ETA</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.75rem; background: rgba(0,0,0,0.3); padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <div><b>Prescribed Antivenom:</b> ${data.recommended_antivenom}</div>
+                        <div style="margin-top: 0.25rem;"><b>Nearest Hub:</b> ${data.nearest_stockrooms[0].hub_name} (${data.nearest_stockrooms[0].road_distance_km} km)</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Run Operations Research Stockroom Optimizer
+        async function runStockroomOptimization() {
+            const country = document.getElementById('optimizer-country-select').value;
+            const k_hubs = parseInt(document.getElementById('optimizer-k-hubs').value) || 6;
+            const max_time = parseFloat(document.getElementById('optimizer-max-time').value) || 2.0;
+
+            const res = await fetch('/api/optimize_stockrooms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ country, num_stockrooms: k_hubs, max_travel_time: max_time })
+            });
+            const data = await res.json();
+
+            markersLayer.clearLayers();
+            routeLayer.clearLayers();
+
+            const hubBounds = [];
+
+            // Plot Hubs and Assigned Districts
+            data.selected_stockroom_hubs.forEach(hub => {
+                hubBounds.push([hub.lat, hub.lon]);
+                
+                // Hub Marker
+                L.circleMarker([hub.lat, hub.lon], {
+                    radius: 12,
+                    color: '#10b981',
+                    fillColor: '#059669',
+                    fillOpacity: 0.9,
+                    weight: 3
+                }).addTo(markersLayer).bindPopup(`
+                    <div style="color:#000;">
+                        <b>HUB #${hub.hub_id}: ${hub.district_name}</b><br>
+                        Assigned Districts: ${hub.assigned_districts_count}<br>
+                        Pop at Risk: ${hub.assigned_population.toLocaleString()}<br>
+                        Safety Stock: ${hub.recommended_safety_stock_vials} vials
+                    </div>
+                `);
+
+                // 2-Hour Golden Hour Coverage Ring (~90km radius at 45km/h)
+                L.circle([hub.lat, hub.lon], {
+                    radius: 90000,
+                    color: '#10b981',
+                    fillColor: '#10b981',
+                    fillOpacity: 0.08,
+                    weight: 1,
+                    dashArray: '4, 4'
+                }).addTo(routeLayer);
+            });
+
+            // Connect Districts to Hubs
+            data.district_assignments.forEach(d => {
+                const hub = data.selected_stockroom_hubs.find(h => h.district_name === d.assigned_hub);
+                if (hub) {
+                    L.circleMarker([d.lat, d.lon], {
+                        radius: 4,
+                        color: d.within_golden_hour ? '#38bdf8' : '#f43f5e',
+                        fillColor: d.within_golden_hour ? '#0284c7' : '#e11d48',
+                        fillOpacity: 0.7,
+                        weight: 1
+                    }).addTo(markersLayer).bindPopup(`<b>${d.district}</b><br>ETA: ${d.travel_time_min} mins to ${d.assigned_hub}`);
+                }
+            });
+
+            if (hubBounds.length > 0) {
+                map.fitBounds(hubBounds, { padding: [50, 50] });
+            }
+
+            // Render Output Stats
+            const out = document.getElementById('optimizer-results-output');
+            out.style.display = 'block';
+            out.innerHTML = `
+                <div class="glass-card">
+                    <h4 style="font-size: 0.9rem; color: var(--accent-emerald); margin-bottom: 0.75rem;">
+                        <i class="fa-solid fa-circle-check"></i> Optimal ${data.k_stockrooms}-Hub Solution Found
+                    </h4>
+                    
+                    <div class="stat-mini-grid" style="margin-bottom: 0.85rem;">
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-val" style="color: var(--accent-emerald);">${data.pct_covered_in_golden_hour}%</div>
+                            <div class="stat-mini-lbl">Golden Hour Coverage</div>
+                        </div>
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-val" style="color: var(--primary);">${data.avg_travel_time_minutes}m</div>
+                            <div class="stat-mini-lbl">Avg Response Time</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.75rem; max-height: 200px; overflow-y: auto;">
+                        ${data.selected_stockroom_hubs.map(h => `
+                            <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <span><b>Hub ${h.hub_id}:</b> ${h.district_name}</span>
+                                <span style="color: var(--primary);">${h.recommended_safety_stock_vials} vials</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

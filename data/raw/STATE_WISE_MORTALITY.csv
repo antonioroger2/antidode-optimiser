@@ -1,0 +1,30 @@
+state_name,geographical_zone,population_millions,rural_population_pct,total_phcs,envenomation_rate_per_100k,endemic_snake_species,recommended_standard_vials_per_bite,specialized_regional_vials_required,rural_population_millions,estimated_annual_envenomations,annual_antivenom_vials_demand,avg_annual_demand_per_phc
+Uttar Pradesh,North,231.5,77.7,3621,5.2,Bungarus caeruleus; Naja naja; Daboia russelii; Echis carinatus,10,0,179.88,10964,137050,37.8
+Bihar,East,124.8,88.7,1899,6.8,Bungarus caeruleus; Bungarus niger; Naja naja; Daboia russelii,12,2,110.7,8102,121530,64.0
+Maharashtra,West,125.7,54.8,1814,5.4,Daboia russelii; Echis carinatus; Naja naja; Bungarus caeruleus; Trimeresurus malabaricus,10,0,68.88,5560,69500,38.3
+West Bengal,East,99.1,68.1,913,7.5,Naja kaouthia; Bungarus caeruleus; Bungarus fasciatus; Daboia russelii; Cryptelytrops albolabris,12,4,67.49,6484,97260,106.5
+Madhya Pradesh,Central,85.3,72.4,1416,6.1,Bungarus caeruleus; Daboia russelii; Echis carinatus; Naja naja,10,0,61.76,4628,57850,40.9
+Tamil Nadu,South,76.8,51.6,1806,4.2,Daboia russelii; Echis carinatus; Naja naja; Bungarus caeruleus; Hypnale hypnale,10,2,39.63,2601,32512,18.0
+Rajasthan,North-West,80.1,75.1,2082,5.9,Echis carinatus; Bungarus sindanus; Naja oxiana; Bungarus caeruleus; Daboia russelii,10,2,60.16,4255,53187,25.5
+Karnataka,South,67.5,61.3,2359,4.5,Daboia russelii; Echis carinatus; Naja naja; Bungarus caeruleus; Trimeresurus malabaricus; Ophiophagus hannah,10,0,41.38,2567,32087,13.6
+Gujarat,West,70.4,57.4,1475,4.8,Echis carinatus; Daboia russelii; Bungarus caeruleus; Naja naja,10,0,40.41,2803,35037,23.8
+Andhra Pradesh,South,53.9,70.5,1145,6.4,Daboia russelii; Echis carinatus; Bungarus caeruleus; Naja naja,10,0,38.0,3042,38025,33.2
+Odisha,East,46.3,83.3,1288,8.9,Bungarus caeruleus; Bungarus fasciatus; Daboia russelii; Naja naja; Naja kaouthia,12,2,38.57,3845,57675,44.8
+Telangana,South,39.4,61.1,636,5.1,Daboia russelii; Echis carinatus; Bungarus caeruleus; Naja naja,10,0,24.07,1696,21200,33.3
+Kerala,South,35.8,52.3,848,3.8,Daboia russelii; Echis carinatus; Naja naja; Hypnale hypnale; Trimeresurus malabaricus; Ophiophagus hannah,10,4,18.72,1100,13750,16.2
+Jharkhand,East,38.6,76.0,330,7.2,Bungarus caeruleus; Bungarus fasciatus; Naja naja; Daboia russelii,10,0,29.34,2512,31400,95.2
+Assam,North-East,35.6,85.9,1014,6.5,Naja kaouthia; Bungarus fasciatus; Bungarus niger; Cryptelytrops erythrurus; Ophiophagus hannah,12,6,30.58,2183,32745,32.3
+Punjab,North,30.1,62.5,432,2.9,Bungarus caeruleus; Naja naja; Daboia russelii,10,0,18.81,741,9262,21.4
+Chhattisgarh,Central,30.0,76.8,792,6.7,Bungarus caeruleus; Daboia russelii; Echis carinatus; Naja naja,10,0,23.04,1823,22787,28.8
+Haryana,North,29.5,65.1,365,3.1,Bungarus caeruleus; Naja naja; Echis carinatus,10,0,19.2,786,9825,26.9
+Uttarakhand,North,11.5,69.8,257,3.9,Gloydius himalayanus; Bungarus caeruleus; Naja naja; Daboia russelii,10,2,8.03,394,4925,19.2
+Himachal Pradesh,North,7.5,89.9,584,3.2,Gloydius himalayanus; Bungarus caeruleus; Naja naja,10,2,6.74,230,2875,4.9
+Tripura,North-East,4.1,73.8,93,5.8,Naja kaouthia; Bungarus fasciatus; Cryptelytrops albolabris,12,6,3.03,212,3180,34.2
+Meghalaya,North-East,3.3,79.9,110,5.2,Naja kaouthia; Bungarus niger; Cryptelytrops erythrurus,12,6,2.64,157,2355,21.4
+Manipur,North-East,3.2,70.8,85,4.9,Naja kaouthia; Bungarus fasciatus; Protobothrops jerdonii,12,6,2.27,138,2070,24.4
+Nagaland,North-East,2.2,71.1,126,4.7,Naja kaouthia; Bungarus niger; Protobothrops mucrosquamatus,12,6,1.56,91,1365,10.8
+Goa,West,1.6,37.8,24,2.5,Daboia russelii; Echis carinatus; Trimeresurus malabaricus,10,0,0.6,30,375,15.6
+Arunachal Pradesh,North-East,1.6,77.1,143,4.4,Protobothrops jerdonii; Protobothrops kaulbacki; Naja kaouthia,12,6,1.23,63,945,6.6
+Mizoram,North-East,1.2,47.9,57,4.1,Naja kaouthia; Cryptelytrops albolabris; Bungarus fasciatus,12,6,0.57,38,570,10.0
+Sikkim,North-East,0.7,74.8,29,3.0,Gloydius himalayanus; Bungarus niger; Cryptelytrops septentrionalis,10,2,0.52,18,225,7.8
+Jammu & Kashmir,North,13.6,72.6,637,3.4,Gloydius himalayanus; Macrovipera lebetina; Naja oxiana; Bungarus caeruleus,10,2,9.87,411,5137,8.1
