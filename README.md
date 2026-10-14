@@ -43,6 +43,11 @@ antidode-optimiser/
 │   ├── test_preprocessing.py # Geometry, column schema & CFR validation tests
 │   └── test_optimization.py  # Mathematical solver & Flask API endpoint tests
 │
+├── scripts/                  # Operational execution & runner scripts
+│   ├── run_app.sh            # Launch interactive web dashboard
+│   ├── run_tests.sh          # Run complete test suites
+│   └── run_pipeline.sh       # Recompile master optimization dataset
+│
 ├── docs/                     # Comprehensive scientific documentation
 │   └── DATASET_DOCUMENTATION.md # Detailed data dictionary and methodologies
 │
@@ -50,10 +55,7 @@ antidode-optimiser/
 ├── .gitattributes            # Line endings & binary rules
 ├── requirements.txt          # Python dependency specifications
 ├── pyproject.toml            # PEP 517/621 packaging metadata
-├── LICENSE                   # MIT License
-├── run_app.sh                # One-click web server startup script
-├── run_tests.sh              # One-click test runner
-└── run_pipeline.sh           # One-click dataset rebuild script
+└── LICENSE                   # MIT License
 ```
 
 ---
@@ -79,16 +81,14 @@ This framework solves this by coupling:
 git clone https://github.com/your-org/antidode-optimiser.git
 cd antidode-optimiser
 
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ### 2. Launch the Interactive Web Dashboard
 ```bash
-./run_app.sh
-# Or:
-python3 optimise/app.py
+./scripts/run_app.sh
 ```
 Open your browser to: **`http://127.0.0.1:8080`**
 
@@ -97,7 +97,7 @@ Open your browser to: **`http://127.0.0.1:8080`**
 
 ### 3. Run Test Suites
 ```bash
-./run_tests.sh
+./scripts/run_tests.sh
 ```
 
 ### 4. Re-fetch Raw Data & Run Preprocessing Pipeline
@@ -106,7 +106,7 @@ Open your browser to: **`http://127.0.0.1:8080`**
 ./dataset/fetch_who_data.sh
 
 # Recompile the master optimization dataset
-./run_pipeline.sh
+./scripts/run_pipeline.sh
 ```
 
 ---
