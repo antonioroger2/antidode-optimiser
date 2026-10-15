@@ -658,11 +658,11 @@
         <!-- Global KPI Ticker Bar -->
         <div class="navbar-kpi-bar" id="navbar-kpis">
             <div class="kpi-pill">
-                <span class="kpi-pill-lbl">Golden Hour Coverage</span>
+                <span class="kpi-pill-lbl">Courses ≤ Resupply Std</span>
                 <span class="kpi-pill-val" id="top-kpi-coverage" style="color: var(--accent-emerald);">--%</span>
             </div>
             <div class="kpi-pill">
-                <span class="kpi-pill-lbl">Avg Response ETA</span>
+                <span class="kpi-pill-lbl">Mean Resupply / Course</span>
                 <span class="kpi-pill-val" id="top-kpi-eta" style="color: var(--primary);">-- min</span>
             </div>
             <div class="kpi-pill">
@@ -672,6 +672,10 @@
             <div class="kpi-pill">
                 <span class="kpi-pill-lbl">Cold Storage Vol</span>
                 <span class="kpi-pill-val" id="top-kpi-liters" style="color: var(--accent-cyan);">-- L</span>
+            </div>
+            <div class="kpi-pill">
+                <span class="kpi-pill-lbl">Optimality</span>
+                <span class="kpi-pill-val" id="top-kpi-gap" style="color: var(--accent-emerald); font-size: 0.8rem;">--</span>
             </div>
             <div class="kpi-pill">
                 <span class="kpi-pill-lbl">Scenario Mode</span>
@@ -689,10 +693,10 @@
                     <i class="fa-solid fa-bolt-lightning"></i> Stress Simulator
                 </button>
                 <button class="nav-tab" id="tab-species-btn" onclick="switchTab('species')">
-                    <i class="fa-solid fa-dragon"></i> Species Hazard
+                    <i class="fa-solid fa-dragon"></i> Species Presence
                 </button>
                 <button class="nav-tab" id="tab-patient-btn" onclick="switchTab('patient')">
-                    <i class="fa-solid fa-truck-medical"></i> Emergency Dispatch
+                    <i class="fa-solid fa-truck-medical"></i> Nearest Stock
                 </button>
             </nav>
 
@@ -714,7 +718,7 @@
                     <div class="card-header-title">
                         <span style="color: var(--primary);"><i class="fa-solid fa-sliders"></i> Location-Inventory Model</span>
                         <span class="danger-badge badge-combo" style="font-size: 0.65rem;">
-                            <i class="fa-solid fa-shuffle"></i> Multi-Brand Dual-Sourcing
+                            <i class="fa-solid fa-certificate"></i> Exact MILP + certificate
                         </span>
                     </div>
 
@@ -729,47 +733,54 @@
                         <div class="range-slider-wrapper">
                             <label class="form-label">
                                 <span><i class="fa-solid fa-warehouse"></i> Hub Stockrooms ($p$)</span>
-                                <span class="slider-val-badge" id="val-k-hubs">5 Hubs</span>
+                                <span class="slider-val-badge" id="val-k-hubs">8 Hubs</span>
                             </label>
-                            <input type="range" class="range-slider" id="slider-k-hubs" min="1" max="20" value="5" oninput="updateSliderVal('val-k-hubs', this.value + ' Hubs')">
+                            <input type="range" class="range-slider" id="slider-k-hubs" min="1" max="30" value="8" oninput="updateSliderVal('val-k-hubs', this.value + ' Hubs')">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="range-slider-wrapper">
                             <label class="form-label">
-                                <span><i class="fa-solid fa-clock"></i> Golden Hour Limit</span>
-                                <span class="slider-val-badge" id="val-golden-time">2.0 Hours</span>
+                                <span><i class="fa-solid fa-clock"></i> Hub → District Resupply Standard</span>
+                                <span class="slider-val-badge" id="val-golden-time">Off (pure p-median)</span>
                             </label>
-                            <input type="range" class="range-slider" id="slider-golden-time" min="1.0" max="4.0" step="0.5" value="2.0" oninput="updateSliderVal('val-golden-time', this.value + ' Hours')">
+                            <input type="range" class="range-slider" id="slider-golden-time" min="0" max="24" step="1" value="0" oninput="updateSliderVal('val-golden-time', this.value == 0 ? 'Off (pure p-median)' : this.value + ' Hours')">
+                            <div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 0.25rem;">Logistics resupply time, not bite-to-treatment time. Off = minimise course-weighted time (proven optimal, fast); on = maximise courses within T first (harder; certified gap shown). KPI uses 8 h when off.</div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="range-slider-wrapper">
-                            <label class="form-label">
-                                <span><i class="fa-solid fa-magnet"></i> Continuous Hazard Attraction ($\alpha$)</span>
-                                <span class="slider-val-badge" id="val-hazard-weight">1.0 (Balanced)</span>
-                            </label>
-                            <input type="range" class="range-slider" id="slider-hazard-weight" min="0.0" max="2.5" step="0.25" value="1.0" oninput="updateHazardWeightVal(this.value)">
-                        </div>
+                        <label class="form-label"><span><i class="fa-solid fa-people-group"></i> Envenomings per death (ρ, WHO-derived)</span></label>
+                        <select class="form-select" id="optimizer-rho">
+                            <option value="13">Low – 13 (1.8 M / 138 k)</option>
+                            <option value="20.5" selected>Base – 20.5 (WHO midpoints)</option>
+                            <option value="35.5">High – 35.5 (WHO envenomings / GBD deaths)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span><i class="fa-solid fa-syringe"></i> Initial dose per course (vials, assumption)</span></label>
+                        <select class="form-select" id="optimizer-dose">
+                            <option value="5">5 vials</option>
+                            <option value="10" selected>10 vials</option>
+                            <option value="20">20 vials</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">
-                            <span><i class="fa-solid fa-shield-halved"></i> Target Service Level (Non-Stockout)</span>
-                            <span class="slider-val-badge" id="val-service-level">99.0% ($z=2.33$)</span>
+                            <span><i class="fa-solid fa-shield-halved"></i> Cycle Service Level P(no stock-out in R+L)</span>
                         </label>
                         <select class="form-select" id="optimizer-service-level">
                             <option value="0.95">95.0% Service Level (Standard)</option>
                             <option value="0.98">98.0% Service Level (High)</option>
-                            <option value="0.99" selected>99.0% Service Level (Clinical Benchmark)</option>
-                            <option value="0.999">99.9% Service Level (Critical Emergency Guarantee)</option>
+                            <option value="0.99" selected>99.0% Service Level</option>
+                            <option value="0.999">99.9% Service Level</option>
                         </select>
                     </div>
 
                     <button class="btn-action btn-primary" onclick="executeStockroomOptimization()">
-                        <i class="fa-solid fa-calculator"></i> Solve Optimal Hubs & Vials
+                        <i class="fa-solid fa-calculator"></i> Solve (exact) Hubs & Vials
                     </button>
 
                     <!-- Quick Scenario Presets -->
@@ -777,7 +788,7 @@
                         <span class="form-label">Quick Scenario Presets</span>
                         <div class="preset-grid">
                             <button class="preset-btn" onclick="runScenarioPreset('monsoon_surge')">
-                                <i class="fa-solid fa-cloud-showers-heavy" style="color: var(--primary);"></i> Monsoon Surge
+                                <i class="fa-solid fa-cloud-showers-heavy" style="color: var(--primary);"></i> Seasonal Surge ×2.5
                             </button>
                             <button class="preset-btn" onclick="runScenarioPreset('hub_outage')">
                                 <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-rose);"></i> Cold-Chain Outage
@@ -805,6 +816,14 @@
                         <!-- Dynamically populated -->
                     </div>
                 </div>
+
+                <!-- Model certificate & provenance -->
+                <div id="optimizer-cert-card" class="glass-card" style="display: none; margin-top: 0.85rem;">
+                    <div class="card-header-title">
+                        <span style="color: var(--accent-purple);"><i class="fa-solid fa-certificate"></i> Model Certificate & Provenance</span>
+                    </div>
+                    <div id="optimizer-cert-content" style="font-size: 0.72rem; line-height: 1.55; color: var(--text-muted);"></div>
+                </div>
             </div>
 
             <!-- TAB 2: STRESS SIMULATOR -->
@@ -824,7 +843,7 @@
                     <div class="form-group">
                         <div class="range-slider-wrapper">
                             <label class="form-label">
-                                <span><i class="fa-solid fa-chart-line"></i> Seasonal Envenomation Surge Factor</span>
+                                <span><i class="fa-solid fa-chart-line"></i> Seasonal Demand Multiplier</span>
                                 <span class="slider-val-badge" id="val-surge-factor">1.0x</span>
                             </label>
                             <input type="range" class="range-slider" id="slider-surge-factor" min="1.0" max="3.5" step="0.5" value="1.0" oninput="updateSliderVal('val-surge-factor', this.value + 'x')">
@@ -855,7 +874,7 @@
             <div id="panel-species" style="display: none;">
                 <div class="glass-card" style="margin-bottom: 0.85rem;">
                     <div class="card-header-title" style="color: var(--primary);">
-                        <i class="fa-solid fa-map-location-dot"></i> District Hazard Lookup
+                        <i class="fa-solid fa-map-location-dot"></i> District Species Lookup (WHO ranges)
                     </div>
                     <div class="form-group">
                         <label class="form-label"><i class="fa-solid fa-globe"></i> Country</label>
@@ -874,7 +893,7 @@
                 <div id="species-results-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
                         <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">
-                            Species Threat Matrix
+                            Species present (WHO range maps: expected occurrence, not abundance)
                         </h4>
                         <span class="danger-badge badge-cat1" id="species-count-badge">0 Species</span>
                     </div>
@@ -888,7 +907,7 @@
             <div id="panel-patient" style="display: none;">
                 <div class="glass-card" style="margin-bottom: 0.85rem; border-color: rgba(244, 63, 94, 0.4);">
                     <div class="card-header-title" style="color: var(--accent-rose);">
-                        <i class="fa-solid fa-heart-pulse"></i> Patient Envenomation Dispatch
+                        <i class="fa-solid fa-heart-pulse"></i> Nearest hub holding the right antivenom
                     </div>
                     <div class="form-group">
                         <label class="form-label"><i class="fa-solid fa-globe"></i> Country</label>
@@ -913,7 +932,7 @@
                         <input type="number" class="form-input" id="patient-hours-input" min="0.1" max="24" step="0.5" value="1.0">
                     </div>
                     <button class="btn-action btn-danger" onclick="runPatientEmergencyTriage()">
-                        <i class="fa-solid fa-route"></i> Verify Stock & Calculate Route
+                        <i class="fa-solid fa-route"></i> Find stocked hubs
                     </button>
                 </div>
 
@@ -929,10 +948,10 @@
             <!-- Map Layer Toggles -->
             <div class="map-layer-toggles">
                 <button class="layer-toggle-btn active" id="btn-toggle-heatmap" onclick="toggleMapLayer('heatmap')">
-                    <i class="fa-solid fa-fire"></i> Continuous Threat Heatmap
+                    <i class="fa-solid fa-fire"></i> Expected Courses / yr
                 </button>
                 <button class="layer-toggle-btn active" id="btn-toggle-isochrones" onclick="toggleMapLayer('isochrones')">
-                    <i class="fa-solid fa-circle-notch"></i> Golden Hour Rings
+                    <i class="fa-solid fa-circle-notch"></i> Resupply Radius
                 </button>
                 <button class="layer-toggle-btn active" id="btn-toggle-arcs" onclick="toggleMapLayer('arcs')">
                     <i class="fa-solid fa-share-nodes"></i> Dispatch Corridors
@@ -972,7 +991,7 @@
                             <div style="font-size: 1.35rem; font-weight: 800; color: var(--accent-cyan);" id="drawer-hub-liters">-- L</div>
                         </div>
                         <div class="glass-card" style="padding: 0.75rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Catchment Population</span>
+                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Catchment Pop. / Courses·yr⁻¹</span>
                             <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-emerald);" id="drawer-hub-pop">--</div>
                         </div>
                         <div class="glass-card" style="padding: 0.75rem; text-align: center;">
@@ -988,19 +1007,19 @@
                                 <i class="fa-solid fa-prescription-bottle-medical"></i> Itemized Antivenom Inventory
                             </h4>
                             <span class="danger-badge badge-combo" style="font-size: 0.65rem;">
-                                Multi-Product Optimal Allocation
+                                (R,S) compound-Poisson, exact
                             </span>
                         </div>
                         <div style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: var(--bg-surface);">
                             <table class="manifest-table" id="drawer-manifest-table">
                                 <thead>
                                     <tr>
-                                        <th>Formulation / Brand</th>
-                                        <th>Blend</th>
-                                        <th>Cycle</th>
+                                        <th>Product (WHO catalogue)</th>
+                                        <th>Courses/yr</th>
+                                        <th>Mean R+L</th>
                                         <th>Safety</th>
-                                        <th>Reserve</th>
-                                        <th style="color: var(--primary);">Total</th>
+                                        <th>Fill rate</th>
+                                        <th style="color: var(--primary);">Order-up-to S</th>
                                     </tr>
                                 </thead>
                                 <tbody id="drawer-manifest-tbody">
@@ -1013,7 +1032,7 @@
                     <!-- Catchment Assigned Districts Table -->
                     <div>
                         <h4 style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
-                            <i class="fa-solid fa-map-pin"></i> Catchment Districts & Response Time
+                            <i class="fa-solid fa-map-pin"></i> Catchment Districts & Resupply Time
                         </h4>
                         <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-surface); padding: 0.5rem;">
                             <div id="drawer-catchment-list" style="font-size: 0.75rem;">
@@ -1057,7 +1076,7 @@
 
                     <!-- Chart 3: Travel Time Histogram -->
                     <div class="chart-box">
-                        <span class="chart-title"><i class="fa-solid fa-truck-fast"></i> Golden Hour Accessibility Curve</span>
+                        <span class="chart-title"><i class="fa-solid fa-truck-fast"></i> Courses by Resupply Time</span>
                         <div style="flex: 1; position: relative;">
                             <canvas id="chart-travel-times"></canvas>
                         </div>
@@ -1241,16 +1260,16 @@
         async function executeStockroomOptimization(overrideParams = {}) {
             const country = document.getElementById('optimizer-country-select').value;
             const k_hubs = parseInt(document.getElementById('slider-k-hubs').value) || 5;
-            const max_time = parseFloat(document.getElementById('slider-golden-time').value) || 2.0;
-            const hazard_weight = parseFloat(document.getElementById('slider-hazard-weight').value) || 1.0;
+            const max_time = parseFloat(document.getElementById('slider-golden-time').value);
             const service_level = parseFloat(document.getElementById('optimizer-service-level').value) || 0.99;
 
             const payload = Object.assign({
                 country: country,
                 num_stockrooms: k_hubs,
-                max_travel_time: max_time,
-                hazard_weight: hazard_weight,
+                max_resupply_hours: max_time > 0 ? max_time : null,
                 service_level: service_level,
+                envenomings_per_death: parseFloat(document.getElementById('optimizer-rho').value),
+                initial_dose_vials: parseInt(document.getElementById('optimizer-dose').value),
                 scenario: 'baseline'
             }, overrideParams);
 
@@ -1261,8 +1280,10 @@
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
+                if (data.error) { showSolverError(data.error); return data; }
                 currentSolutionData = data;
                 renderOptimizationResults(data);
+                return data;
             } catch (err) {
                 console.error("Optimization failed:", err);
             }
@@ -1271,8 +1292,13 @@
         // Render Optimization Results on Map & Panels
         function renderOptimizationResults(data) {
             // Update Top KPIs
-            document.getElementById('top-kpi-coverage').textContent = `${data.pct_covered_in_golden_hour}%`;
-            document.getElementById('top-kpi-eta').textContent = `${data.avg_travel_time_minutes} min`;
+            document.getElementById('top-kpi-coverage').textContent = data.pct_courses_within_resupply_standard == null ? 'n/a' : `${data.pct_courses_within_resupply_standard}%`;
+            document.getElementById('top-kpi-eta').textContent = `${(data.mean_resupply_hours_per_course).toFixed(2)} h`;
+            const opt = data.optimality || {};
+            const gapEl = document.getElementById('top-kpi-gap');
+            gapEl.textContent = opt.proven_optimal ? 'PROVEN OPTIMAL' : (opt.gap == null ? 'heuristic' : `gap ${(100*opt.gap).toFixed(3)}%`);
+            gapEl.style.color = opt.proven_optimal ? 'var(--accent-emerald)' : 'var(--accent-amber)';
+            renderCertificate(data);
             document.getElementById('top-kpi-vials').textContent = (data.total_national_vials_allocated || 0).toLocaleString();
             document.getElementById('top-kpi-liters').textContent = (data.total_national_cold_chain_liters || 0).toLocaleString() + ' L';
             document.getElementById('top-kpi-scenario').textContent = (data.scenario || 'BASELINE').toUpperCase();
@@ -1310,11 +1336,14 @@
             // Render Hub Stockroom Markers & Isochrones
             data.selected_stockroom_hubs.forEach(hub => {
                 bounds.push([hub.lat, hub.lon]);
-                outageSelect.add(new Option(`Hub #${hub.hub_id}: ${hub.district_name} (${hub.state_name})`, hub.district_name));
+                outageSelect.add(new Option(`Hub #${hub.hub_id}: ${hub.district_name} (${hub.state_name})`, hub.district_id));
 
-                // Golden Hour Isochrone Rings (Concentric circles: 45km = 1h, 90km = 2h Golden Hour)
-                L.circle([hub.lat, hub.lon], {
-                    radius: 90000,
+                // Resupply radius: great-circle km reachable within the standard (speed / circuity)
+                const P = data.parameters || {};
+                const Tstd = data.resupply_standard_hours || 0;
+                const rKm = Tstd > 0 ? Tstd * P.avg_speed_kmh / P.circuity : 0;
+                if (rKm > 0) L.circle([hub.lat, hub.lon], {
+                    radius: rKm * 1000,
                     color: '#10b981',
                     fillColor: '#10b981',
                     fillOpacity: 0.05,
@@ -1322,8 +1351,8 @@
                     dashArray: '5, 5'
                 }).addTo(isochronesLayer);
 
-                L.circle([hub.lat, hub.lon], {
-                    radius: 45000,
+                if (rKm > 0) L.circle([hub.lat, hub.lon], {
+                    radius: rKm * 500,
                     color: '#38bdf8',
                     fillColor: '#38bdf8',
                     fillOpacity: 0.08,
@@ -1351,6 +1380,7 @@
                         <div style="font-size: 11px;">Allocated Vials: <b style="color: #0284c7;">${hub.total_vials_to_store.toLocaleString()}</b></div>
                         <div style="font-size: 11px;">Cold Storage: <b>${hub.total_refrigeration_liters} Liters</b></div>
                         <div style="font-size: 11px;">Catchment Pop: <b>${hub.assigned_population.toLocaleString()}</b></div>
+                        <div style="font-size: 11px;">Expected courses/yr: <b>${hub.annual_courses_served.toLocaleString()}</b></div>
                         <div style="font-size: 11px;">Districts: <b>${hub.assigned_districts_count}</b></div>
                         <button onclick="openNodeInventoryDrawer(${hub.hub_id})" style="margin-top: 8px; width: 100%; background: #0284c7; color: white; border: none; padding: 5px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; cursor: pointer;">
                             📦 Open Itemized Manifest
@@ -1363,22 +1393,22 @@
 
             // Render Assigned Districts & Directed Dispatch Arcs
             data.district_assignments.forEach(d => {
-                const hub = data.selected_stockroom_hubs.find(h => h.district_name === d.assigned_hub);
+                const hub = data.selected_stockroom_hubs.find(h => h.hub_id === d.assigned_hub_id);
                 if (hub) {
-                    const arcColor = d.within_golden_hour ? '#38bdf8' : '#f43f5e';
+                    const arcColor = (d.within_resupply_standard !== false) ? '#38bdf8' : '#f43f5e';
                     L.polyline([[d.lat, d.lon], [hub.lat, hub.lon]], {
                         color: arcColor,
                         weight: 1.2,
-                        opacity: d.within_golden_hour ? 0.35 : 0.85,
-                        dashArray: d.within_golden_hour ? '4, 4' : '2, 4'
+                        opacity: (d.within_resupply_standard !== false) ? 0.35 : 0.85,
+                        dashArray: (d.within_resupply_standard !== false) ? '4, 4' : '2, 4'
                     }).addTo(arcsLayer);
                 }
 
                 // District Node Marker
                 const dMarker = L.circleMarker([d.lat, d.lon], {
                     radius: 3.5,
-                    color: d.within_golden_hour ? '#38bdf8' : '#f43f5e',
-                    fillColor: d.within_golden_hour ? '#0284c7' : '#e11d48',
+                    color: (d.within_resupply_standard !== false) ? '#38bdf8' : '#f43f5e',
+                    fillColor: (d.within_resupply_standard !== false) ? '#0284c7' : '#e11d48',
                     fillOpacity: 0.6,
                     weight: 1
                 }).addTo(districtsLayer);
@@ -1403,19 +1433,20 @@
                     <div style="font-family:'Plus Jakarta Sans',sans-serif; color: #0f172a; min-width: 240px; max-width: 320px;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
                             <div>
-                                <div style="font-weight: 800; font-size: 13px; color: #0f172a; cursor: pointer; text-decoration: underline dotted #0284c7;" onclick="openDistrictHazardProfile('${d.district.replace(/'/g, "\\'")}')" title="Click to view full species hazard profile">
+                                <div style="font-weight: 800; font-size: 13px; color: #0f172a; cursor: pointer; text-decoration: underline dotted #0284c7;" onclick="openDistrictHazardProfile('${d.district_id.replace(/'/g, "\\'")}')" title="Click to view full species hazard profile">
                                     ${d.district} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; color: #0284c7;"></i>
                                 </div>
                                 <div style="font-size: 11px; color: #64748b;">${d.state}</div>
                             </div>
-                            <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: ${d.within_golden_hour ? 'rgba(16,185,129,0.15)' : 'rgba(244,63,94,0.15)'}; color: ${d.within_golden_hour ? '#059669' : '#e11d48'};">
-                                ${d.within_golden_hour ? 'GOLDEN HOUR (SAFE)' : 'CRITICAL DELAY'}
+                            <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: ${(d.within_resupply_standard !== false) ? 'rgba(16,185,129,0.15)' : 'rgba(244,63,94,0.15)'}; color: ${(d.within_resupply_standard !== false) ? '#059669' : '#e11d48'};">
+                                ${(d.within_resupply_standard !== false) ? 'WITHIN STANDARD' : 'BEYOND STANDARD'}
                             </span>
                         </div>
 
                         <div style="font-size: 11px; margin-top: 4px; color: #334155;">
                             <div>Primary Hub: <b style="color: #0284c7;">${d.assigned_hub}</b> (${d.distance_km} km • ${d.travel_time_min} min)</div>
-                            <div>Continuous Hazard Score: <b style="color: #d97706;">${d.hazard_gradient}</b></div>
+                            <div>Expected antivenom courses/yr: <b style="color: #d97706;">${d.annual_courses}</b>${d.courses_no_antivenom > 0 ? ` <span style="color:#dc2626">(+${d.courses_no_antivenom} with no effective antivenom)</span>` : ''}</div>
+                            <div>Population: <b>${Math.round(d.population).toLocaleString()}</b> · exposed (in range): <b>${Math.round(d.exposed_population).toLocaleString()}</b></div>
                         </div>
 
                         <!-- Multi-Commodity Product-Specific Sourcing -->
@@ -1436,8 +1467,8 @@
                         </div>
                         ` : ''}
 
-                        <button onclick="openDistrictHazardProfile('${d.district.replace(/'/g, "\\'")}')" style="margin-top: 8px; width: 100%; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                            <i class="fa-solid fa-dragon"></i> View District Hazard & Species Profile
+                        <button onclick="openDistrictHazardProfile('${d.district_id.replace(/'/g, "\\'")}')" style="margin-top: 8px; width: 100%; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                            <i class="fa-solid fa-dragon"></i> View species present
                         </button>
                     </div>
                 `);
@@ -1468,6 +1499,7 @@
                         <span><i class="fa-solid fa-map-pin"></i> ${h.assigned_districts_count} districts</span>
                         <span><i class="fa-solid fa-snowflake"></i> ${h.total_refrigeration_liters} L</span>
                         <span><i class="fa-solid fa-users"></i> ${(h.assigned_population / 1000000).toFixed(1)}M pop</span>
+                        <span><i class="fa-solid fa-syringe"></i> ${Math.round(h.annual_courses_served).toLocaleString()} courses/yr</span>
                     </div>
                 `;
                 hubListContainer.appendChild(item);
@@ -1484,10 +1516,10 @@
             if (!hub) return;
 
             document.getElementById('drawer-hub-title').textContent = `Hub #${hub.hub_id}: ${hub.district_name}`;
-            document.getElementById('drawer-hub-subtitle').textContent = `${hub.state_name} • Central Distribution Stockroom`;
+            document.getElementById('drawer-hub-subtitle').textContent = `${hub.state_name} • resupply hub`;
             document.getElementById('drawer-hub-vials').textContent = hub.total_vials_to_store.toLocaleString();
             document.getElementById('drawer-hub-liters').textContent = `${hub.total_refrigeration_liters} L`;
-            document.getElementById('drawer-hub-pop').textContent = hub.assigned_population.toLocaleString();
+            document.getElementById('drawer-hub-pop').textContent = `${hub.assigned_population.toLocaleString()} / ${Math.round(hub.annual_courses_served).toLocaleString()}`;
             document.getElementById('drawer-hub-districts').textContent = `${hub.assigned_districts_count} Districts`;
 
             // Render Itemized Multi-Brand Table
@@ -1496,22 +1528,15 @@
 
             hub.vial_inventory.forEach(inv => {
                 const tr = document.createElement('tr');
-                const isCombo = inv.is_combination;
-                const blendBadge = isCombo 
-                    ? `<span class="danger-badge badge-combo">${inv.combination_blend_pct}% Combo</span>`
-                    : `<span class="danger-badge badge-success">Single Source</span>`;
-
                 tr.innerHTML = `
                     <td>
                         <div style="font-weight: 700; color: #fff;">${inv.brand_name}</div>
-                        <div style="font-size: 0.65rem; color: var(--text-dim);">
-                            ${isCombo ? 'Interchangeable with: ' + inv.interchangeable_brands.join(', ') : 'Covers ' + inv.target_species_count + ' species'}
-                        </div>
+                        <div style="font-size: 0.65rem; color: var(--text-dim);">${inv.manufacturer || ''} · covers ${inv.target_species_count} species</div>
                     </td>
-                    <td>${blendBadge}</td>
+                    <td>${inv.annual_courses.toLocaleString()}</td>
                     <td>${inv.cycle_demand.toLocaleString()}</td>
                     <td>${inv.safety_stock_buffer.toLocaleString()}</td>
-                    <td>${inv.emergency_reserve.toLocaleString()}</td>
+                    <td>${(100 * inv.fill_rate).toFixed(2)}%</td>
                     <td style="font-weight: 800; color: var(--primary);">${inv.total_vials_allocated.toLocaleString()}</td>
                 `;
                 tbody.appendChild(tr);
@@ -1520,7 +1545,7 @@
             // Render Catchment Districts List
             const catchmentList = document.getElementById('drawer-catchment-list');
             catchmentList.innerHTML = '';
-            const assignedDists = currentSolutionData.district_assignments.filter(d => d.assigned_hub === hub.district_name);
+            const assignedDists = currentSolutionData.district_assignments.filter(d => d.assigned_hub_id === hub.hub_id);
 
             assignedDists.forEach(d => {
                 const row = document.createElement('div');
@@ -1538,7 +1563,7 @@
                 row.onmouseleave = () => { row.style.background = 'transparent'; };
                 row.onclick = () => {
                     closeNodeInventoryDrawer();
-                    openDistrictHazardProfile(d.district);
+                    openDistrictHazardProfile(d.district_id);
                 };
                 row.innerHTML = `
                     <div>
@@ -1546,10 +1571,10 @@
                             <i class="fa-solid fa-location-dot" style="color: var(--primary); font-size: 0.75rem; margin-right: 4px;"></i>
                             ${d.district}
                         </div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted);">${d.state} • Hazard: <span style="color: #f59e0b; font-weight: 600;">${d.hazard_gradient || 0}</span></div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${d.state} • Courses/yr: <span style="color: #f59e0b; font-weight: 600;">${d.annual_courses}</span></div>
                     </div>
                     <div style="text-align: right;">
-                        <div style="color: ${d.within_golden_hour ? 'var(--accent-emerald)' : 'var(--accent-rose)'}; font-weight: 700; font-size: 0.75rem;">
+                        <div style="color: ${(d.within_resupply_standard !== false) ? 'var(--accent-emerald)' : 'var(--accent-rose)'}; font-weight: 700; font-size: 0.75rem;">
                             ${d.travel_time_min} min
                         </div>
                         <div style="font-size: 0.68rem; color: var(--text-dim);">${d.distance_km} km</div>
@@ -1645,24 +1670,24 @@
                 }
             });
 
-            // 3. Response Time Accessibility Histogram
-            let bin30 = 0, bin60 = 0, bin120 = 0, binOver = 0;
+            // 3. Expected courses by resupply time (relative to the standard)
+            const Tstd = data.resupply_standard_hours || 8;
+            const edges = [Tstd / 4, Tstd / 2, Tstd];
+            const binsC = [0, 0, 0, 0];
             data.district_assignments.forEach(d => {
-                const t = d.travel_time_min;
-                if (t <= 30) bin30++;
-                else if (t <= 60) bin60++;
-                else if (t <= 120) bin120++;
-                else binOver++;
+                const h = d.travel_time_min / 60;
+                const k = h <= edges[0] ? 0 : h <= edges[1] ? 1 : h <= edges[2] ? 2 : 3;
+                binsC[k] += d.annual_courses;
             });
-
+            const [bin30, bin60, bin120, binOver] = binsC.map(v => Math.round(v));
             const ctxTimes = document.getElementById('chart-travel-times').getContext('2d');
             if (chartTravelTimes) chartTravelTimes.destroy();
             chartTravelTimes = new Chart(ctxTimes, {
                 type: 'bar',
                 data: {
-                    labels: ['< 30 min', '30-60 min', '1-2h (Golden)', '> 2h Delay'],
+                    labels: [`≤ ${edges[0]}h`, `≤ ${edges[1]}h`, `≤ ${edges[2]}h`, `> ${edges[2]}h`],
                     datasets: [{
-                        label: 'Districts Served',
+                        label: 'Expected courses / yr',
                         data: [bin30, bin60, bin120, binOver],
                         backgroundColor: [
                             'rgba(16, 185, 129, 0.8)',
@@ -1689,13 +1714,14 @@
         function runScenarioPreset(preset) {
             document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
             if (preset === 'monsoon_surge') {
-                executeStockroomOptimization({ scenario: 'monsoon_surge', surge_factor: 2.5 });
+                executeStockroomOptimization({ scenario: 'seasonal_surge', surge_factor: 2.5 });
             } else if (preset === 'hub_outage') {
                 switchTab('scenario');
                 document.getElementById('scenario-outage-select').selectedIndex = 1;
                 runCustomStressTest();
             } else if (preset === 'supply_constrained') {
-                executeStockroomOptimization({ scenario: 'supply_constrained', total_vial_cap: 50000 });
+                const target = currentSolutionData ? currentSolutionData.total_national_vials_allocated : 0;
+                executeStockroomOptimization({ scenario: 'supply_constrained', total_vial_cap: Math.max(1, Math.round(0.6 * target)) });
             } else {
                 executeStockroomOptimization({ scenario: 'baseline', surge_factor: 1.0 });
             }
@@ -1707,31 +1733,65 @@
             const disabledHub = document.getElementById('scenario-outage-select').value;
             const surgeFactor = parseFloat(document.getElementById('slider-surge-factor').value) || 1.0;
             const vialCap = parseInt(document.getElementById('scenario-vial-cap').value) || null;
-
+            const maxT = parseFloat(document.getElementById('slider-golden-time').value);
             const payload = {
                 country: country,
-                num_stockrooms: parseInt(document.getElementById('slider-k-hubs').value) || 5,
-                max_travel_time: parseFloat(document.getElementById('slider-golden-time').value) || 2.0,
-                scenario: disabledHub ? 'hub_outage' : (surgeFactor > 1.0 ? 'monsoon_surge' : 'baseline'),
-                disabled_hub_district: disabledHub,
+                num_stockrooms: parseInt(document.getElementById('slider-k-hubs').value) || 8,
+                max_resupply_hours: maxT > 0 ? maxT : null,
+                service_level: parseFloat(document.getElementById('optimizer-service-level').value) || 0.99,
+                envenomings_per_death: parseFloat(document.getElementById('optimizer-rho').value),
+                initial_dose_vials: parseInt(document.getElementById('optimizer-dose').value),
+                scenario_type: 'custom',
+                disabled_hub_district: disabledHub || null,
                 surge_factor: surgeFactor,
                 total_vial_cap: vialCap
             };
-
-            await executeStockroomOptimization(payload);
-
+            const res = await fetch('/api/simulate_scenario', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.error) { showSolverError(data.error); return; }
+            currentSolutionData = data;
+            renderOptimizationResults(data);
+            const imp = data.impact_vs_baseline || {};
+            const r = imp.rationing;
             const impactCard = document.getElementById('scenario-impact-card');
             const impactContent = document.getElementById('scenario-impact-content');
             impactCard.style.display = 'block';
-
             impactContent.innerHTML = `
-                <div style="margin-bottom: 0.4rem;"><b>Active Stress Scenario:</b> ${payload.scenario.toUpperCase()}</div>
-                <div>Surge Multiplier: <b style="color: var(--primary);">${surgeFactor}x</b></div>
-                ${disabledHub ? `<div style="color: var(--accent-rose);">Disabled Offline Hub: <b>${disabledHub}</b></div>` : ''}
-                ${vialCap ? `<div>National Vial Cap: <b>${vialCap.toLocaleString()}</b></div>` : ''}
-                <div style="margin-top: 0.5rem; font-size: 0.72rem; color: var(--text-muted);">
-                    Surviving hubs automatically absorbed catchment re-routing. Dynamic inventory and risk-pooled safety stocks have been updated.
-                </div>
+                <div>Demand multiplier: <b style="color: var(--primary);">${surgeFactor}×</b></div>
+                ${disabledHub ? `<div style="color: var(--accent-rose);">Hub excluded (y=0): <b>${disabledHub}</b></div>` : ''}
+                <div>Δ mean resupply time / course: <b>${imp.delta_mean_resupply_hours_per_course.toFixed(3)} h</b></div>
+                ${imp.delta_pct_within_standard == null ? '' : `<div>Δ courses within standard: <b>${imp.delta_pct_within_standard.toFixed(2)} pp</b></div>`}
+                <div>Δ vials stocked: <b>${imp.delta_total_vials.toLocaleString()}</b></div>
+                <div>Hubs changed: <b>${(imp.hubs_changed || []).join(', ') || 'none'}</b></div>
+                ${r ? `<div style="margin-top:0.4rem;color:var(--accent-amber)">Cap ${r.cap_vials.toLocaleString()} &lt; target ${r.target_vials.toLocaleString()} vials → optimal rationing; expected shortfall ${Math.round(r.expected_vials_short_per_cycle).toLocaleString()} vials per cycle.</div>` : ''}
+                <div style="margin-top: 0.5rem; font-size: 0.72rem; color: var(--text-muted);">Re-solved exactly with the same certificate; deltas are against the baseline with identical parameters.</div>
+            `;
+        }
+
+        function showSolverError(msg) {
+            const el = document.getElementById('optimizer-cert-content');
+            document.getElementById('optimizer-cert-card').style.display = 'block';
+            el.innerHTML = `<div style="color: var(--accent-rose);"><b>Cannot solve:</b> ${msg}</div>`;
+        }
+
+        function renderCertificate(data) {
+            const o = data.optimality || {}; const a = data.demand_anchor || {}; const lag = o.lagrangian || {};
+            const heur = o.heuristic || {};
+            const heurGap = heur.objective_course_hours ? (100 * (heur.objective_course_hours - data.objective_course_hours_per_year) / data.objective_course_hours_per_year) : null;
+            document.getElementById('optimizer-cert-card').style.display = 'block';
+            document.getElementById('optimizer-cert-content').innerHTML = `
+                <div><b style="color:${o.proven_optimal ? 'var(--accent-emerald)' : 'var(--accent-amber)'}">${o.proven_optimal ? 'Proven optimal' : 'Not proven optimal'}</b> · gap ${o.gap == null ? 'n/a' : (100 * o.gap).toExponential(2) + '%'} · ${o.solve_seconds}s</div>
+                <div>Objective: <b>${Math.round(data.objective_course_hours_per_year).toLocaleString()}</b> course-h/yr · lower bound ${o.lower_bound == null ? 'n/a' : Math.round(o.lower_bound).toLocaleString()}</div>
+                <div>Lagrangian elimination: ${lag.candidates_remaining ?? '–'} of ${lag.candidates_total ?? '–'} candidate hubs kept · status: ${o.status}</div>
+                <div>Heuristic-only (greedy + interchange) is ${heurGap == null ? 'n/a' : heurGap.toFixed(3) + '%'} worse.</div>
+                <hr style="border-color: rgba(255,255,255,0.08); margin: 0.4rem 0;">
+                <div>Burden anchor: GBD-2019 deaths <b>${Math.round(a.gbd2019_deaths).toLocaleString()}</b> × ρ ${a.envenomings_per_death} × p<sub>AV</sub> ${a.p_antivenom_indicated} = <b>${Math.round(a.antivenom_courses_per_year).toLocaleString()}</b> courses/yr</div>
+                <div>Treatable with WHO-listed products: ${Math.round(a.courses_treatable_with_portfolio).toLocaleString()} · no effective antivenom: <span style="color: var(--accent-rose)">${Math.round(a.courses_no_effective_antivenom).toLocaleString()}</span></div>
+                <div>Portfolio: ${(data.product_portfolio || []).map(p => p.brand_name).join('; ')}</div>
+                <div>Population: ${(a.population_source || []).join(', ')} · exposure: ${(a.exposure_base || []).join(', ')}</div>
+                ${(data.warnings || []).map(w => `<div style="color: var(--accent-amber);">⚠ ${w}</div>`).join('')}
             `;
         }
 
@@ -1771,7 +1831,7 @@
             dSelect.innerHTML = '';
             dSelect.add(new Option(`🌐 Whole Country Overview (${districts.length} Districts)`, '__ALL__'));
             districts.forEach(d => {
-                dSelect.add(new Option(`${d.DISTRICT_NAME} (${d.STATE_NAME})`, d.DISTRICT_NAME));
+                dSelect.add(new Option(`${d.DISTRICT_NAME} (${d.STATE_NAME})`, d.district_id));
             });
             dSelect.selectedIndex = 0;
             fetchDistrictSpecies();
@@ -1794,16 +1854,20 @@
 
             document.getElementById('species-count-badge').textContent = `${data.total_species} Species`;
 
+            if (data.expected_courses_per_year != null) {
+                const info = document.createElement('div');
+                info.style.cssText = 'font-size:0.72rem;color:var(--text-muted);margin-bottom:0.5rem;';
+                info.innerHTML = `Expected antivenom courses in this district: <b style="color: var(--primary)">${data.expected_courses_per_year.toFixed(1)}/yr</b>`;
+                listContainer.appendChild(info);
+            }
             data.species.forEach(sp => {
                 const isCat1 = (sp.MEDICAL_IMPORTANCE_CATEGORY || '').includes('Highest');
-                const catBadge = isCat1 ? '<span class="danger-badge badge-cat1">Category 1</span>' : '<span class="danger-badge badge-cat2">Category 2</span>';
-                
-                let asvBadge = '<span class="danger-badge badge-success">Neutralized</span>';
-                const eff = sp.ANTIVENOM_EFFICACY_STATUS || '';
-                if (eff.includes('Deficit') || eff.includes('Poor') || eff.includes('Unneutralized')) {
-                    asvBadge = '<span class="danger-badge badge-danger">Efficacy Deficit</span>';
-                }
-
+                const catBadge = isCat1 ? '<span class="danger-badge badge-cat1">WHO Category 1</span>' : '<span class="danger-badge badge-cat2">WHO Category 2</span>';
+                const asvBadge = sp.HAS_ANTIVENOM ? '<span class="danger-badge badge-success">Antivenom in portfolio</span>'
+                                                  : '<span class="danger-badge badge-danger">No procurable antivenom</span>';
+                const presence = sp.district_presence_count != null
+                    ? `<div>Districts: <b>${sp.district_presence_count}</b> (${sp.country_coverage_pct}%)</div>`
+                    : `<div>Range overlap: <b>${sp.SPECIES_DISTRICT_OVERLAP_PCT}%</b> (${sp.PRESENCE_METHOD})</div>`;
                 const card = document.createElement('div');
                 card.className = 'glass-card';
                 card.style.marginBottom = '0.5rem';
@@ -1812,23 +1876,15 @@
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem;">
                         <div>
                             <div style="font-weight: 700; font-size: 0.85rem; font-style: italic; color: #fff;">${sp.SCIENTIFIC_NAME}</div>
-                            <div style="font-size: 0.72rem; color: var(--text-muted);">${sp.COMMON_NAME || 'Venomous snake'}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted);">${sp.COMMON_NAME || '—'} ${sp.FAMILY ? '· ' + sp.FAMILY : ''}</div>
                         </div>
-                        <span class="danger-badge badge-combo" style="font-size: 0.7rem;">Hazard: ${sp.DANGER_SCORE}/100</span>
                     </div>
-                    <div style="display: flex; gap: 0.35rem; margin: 0.3rem 0;">
-                        ${catBadge}
-                        ${asvBadge}
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; font-size: 0.7rem; color: var(--text-dim); margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.05);">
-                        <div>Untreated CFR: <b>${sp.Untreated_Case_Fatality_Rate_Pct}%</b></div>
-                        <div>Treated CFR: <b>${sp.Treated_Case_Fatality_Rate_Pct}%</b></div>
-                        <div>Standard Dose: <b>${sp.Standard_Antivenom_Vials_Required} vials</b></div>
-                        <div>Overlap: <b>${sp.SPECIES_DISTRICT_OVERLAP_PCT}%</b></div>
-                    </div>
+                    <div style="display: flex; gap: 0.35rem; margin: 0.3rem 0;">${catBadge}${asvBadge}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-dim); margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.05);">${presence}</div>
                     <div style="font-size: 0.68rem; color: var(--primary); margin-top: 0.35rem;">
                         <i class="fa-solid fa-prescription-bottle"></i> <i>${sp.RECOMMENDED_ANTIVENOM_NAME}</i>
                     </div>
+                    ${sp.WHO_MAP_PDF_URL ? `<div style="font-size:0.65rem;margin-top:0.25rem"><a href="${sp.WHO_MAP_PDF_URL}" target="_blank" style="color:var(--text-dim)">WHO range map (PDF)</a></div>` : ''}
                 `;
                 listContainer.appendChild(card);
             });
@@ -1862,7 +1918,7 @@
             const dSelect = document.getElementById('patient-district-select');
             dSelect.innerHTML = '<option value="">Select District...</option>';
             districts.forEach(d => {
-                dSelect.add(new Option(`${d.DISTRICT_NAME} (${d.STATE_NAME})`, d.DISTRICT_NAME));
+                dSelect.add(new Option(`${d.DISTRICT_NAME} (${d.STATE_NAME})`, d.district_id));
             });
 
             if (districts.length > 0) {
@@ -1882,7 +1938,7 @@
             const spSelect = document.getElementById('patient-species-select');
             spSelect.innerHTML = '';
             data.species.forEach(sp => {
-                spSelect.add(new Option(`${sp.SCIENTIFIC_NAME} (${sp.COMMON_NAME})`, sp.SCIENTIFIC_NAME));
+                spSelect.add(new Option(`${sp.SCIENTIFIC_NAME} (${sp.COMMON_NAME || '—'})`, sp.SCIENTIFIC_NAME));
             });
         }
 
@@ -1901,46 +1957,19 @@
 
             const out = document.getElementById('patient-triage-output');
             out.style.display = 'block';
-
-            let statusColor = 'var(--accent-emerald)';
-            if (data.triage_status === 'URGENT_WINDOW') statusColor = 'var(--accent-amber)';
-            if (data.triage_status === 'CRITICAL_WINDOW') statusColor = 'var(--accent-rose)';
-
+            if (data.error) { out.innerHTML = `<div class="glass-card" style="color: var(--accent-rose)">${data.error}</div>`; return; }
             const nearest = data.nearest_stockrooms[0];
-            const proto = data.clinical_protocol || {};
-
+            const rows = data.nearest_stockrooms.map(h => `
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+                    <span>${h.stock_confirmed ? '✅' : '—'} <b>${h.hub_name}</b> (${h.state_name})</span>
+                    <span>${h.road_distance_km} km · ${h.travel_time_minutes} min</span>
+                </div>`).join('');
             out.innerHTML = `
-                <div class="glass-card" style="border-color: ${statusColor};">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-                        <span class="danger-badge" style="background: rgba(244,63,94,0.15); color: ${statusColor}; border: 1px solid ${statusColor};">
-                            <i class="fa-solid fa-bell"></i> ${data.triage_status}
-                        </span>
-                        <span style="font-size: 0.8rem; font-weight: 800;">Total Delay: ${data.total_delay_hours}h</span>
-                    </div>
-
-                    <p style="font-size: 0.78rem; line-height: 1.4; margin-bottom: 0.75rem;">
-                        ${data.triage_message}
-                    </p>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem;">
-                        <div class="glass-card" style="padding: 0.5rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-dim);">Initial Push Dose</span>
-                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-rose);">${proto.initial_push_vials || data.initial_vials_required} Vials</div>
-                        </div>
-                        <div class="glass-card" style="padding: 0.5rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-dim);">Dispatched ETA</span>
-                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">${nearest.travel_time_minutes} min</div>
-                        </div>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.72rem; line-height: 1.5;">
-                        <div><b>Nearest Stockroom:</b> ${nearest.hub_name} (${nearest.road_distance_km} km)</div>
-                        <div><b>Prescribed ASV:</b> ${data.recommended_antivenom}</div>
-                        ${proto.is_multi_brand_combination ? '<div style="color: var(--accent-purple);"><b>Dual-Sourcing:</b> Interchangeable multi-brand combination verified on site.</div>' : ''}
-                        <div style="color: var(--accent-amber); margin-top: 0.3rem;"><b>Infusion:</b> ${proto.administration_route || 'IV infusion over 30-60 min'}</div>
-                    </div>
-                </div>
-            `;
+                <div class="glass-card">
+                    <div style="font-size: 0.78rem; margin-bottom: 0.5rem;"><b>Product for ${data.species}:</b> ${data.recommended_antivenom}</div>
+                    <div style="font-size: 0.74rem;">${rows}</div>
+                    <div style="font-size: 0.66rem; color: var(--text-dim); margin-top: 0.5rem;">${data.note}</div>
+                </div>`;
 
             // Fly to patient on map
             if (data.patient_location && nearest) {

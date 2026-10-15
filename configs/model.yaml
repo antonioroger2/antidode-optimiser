@@ -1,0 +1,107 @@
+# =============================================================================
+# Antivenom location–inventory model: every parameter with its status and source
+# =============================================================================
+# status:
+#   observed   – taken directly from a published dataset in data/
+#   calibrated – derived from observed data by a documented calculation
+#   assumption – planning assumption; MUST be stress-tested (see `scenarios`)
+# A value is never silently imputed: missing data raises an error or is reported.
+# =============================================================================
+
+demand:
+  # Country anchor: annual snakebite deaths, IHME GBD 2019 (via Our World in Data)
+  deaths_source: data/raw/deaths-from-snakebite-envenoming.csv
+  deaths_status: observed
+
+  # rho = envenomings per death.
+  # WHO fact sheet: 1.8–2.7 M envenomings and 81,000–138,000 deaths per year.
+  #   low  = 1.8M / 138k  ≈ 13
+  #   base = 2.25M / 109.5k ≈ 20.5   (midpoints)
+  #   high = 2.25M / 63.4k ≈ 35.5   (WHO envenomings over GBD-2019 world deaths,
+  #                                   i.e. GBD deaths rescaled to WHO envenoming total)
+  # Limitation: one global ratio implies one global CFR; true CFR is higher where
+  # access to care is worse, so rho is overstated there and understated elsewhere.
+  envenomings_per_death: 20.5
+  envenomings_per_death_status: calibrated
+
+  # Share of envenomings that meet indications for antivenom (systemic or severe local
+  # envenoming). No global estimate exists; treated as a planning assumption.
+  p_antivenom_indicated: 0.75
+  p_antivenom_indicated_status: assumption
+
+  # Relative encounter weight of a WHO Category-2 species versus Category-1 when
+  # splitting a district's courses between co-occurring species (only affects the
+  # product mix, never the district total).
+  category2_weight: 0.10
+  category2_weight_status: assumption
+
+  # What population the country burden is distributed over.
+  #   rural_in_range: rural population living inside ≥1 medically important species range
+  #   (India override: agricultural workers inside range, Census 2011)
+  exposure_base: rural_in_range
+  india_exposure_base: agricultural_workers_in_range
+
+course:
+  # Vials per treatment course: d0 with probability (1-q), 2*d0 with probability q
+  # (one repeat dose). Antivenom potency differs by product; d0 is a planning value.
+  initial_dose_vials: 10
+  initial_dose_vials_status: assumption
+  repeat_dose_probability: 0.30
+  repeat_dose_probability_status: assumption
+
+network:
+  # Road distance = circuity * great-circle distance (Ballou, Rahardja & Sakai 2002,
+  # Transportation Research Part A 36:843–848, report national circuity ~1.2–1.4+).
+  circuity: 1.35
+  circuity_status: assumption
+  avg_speed_kmh: 40.0
+  avg_speed_kmh_status: assumption
+  # Resupply standard: a hub should reach its districts within this many hours.
+  # This is a logistics standard for hub -> district resupply, NOT a clinical
+  # bite-to-antivenom time.
+  # Default null = pure p-median (proven optimal in seconds). Set a number to switch to the
+  # lexicographic mode (maximise courses within T first); that mode is much harder and
+  # returns a certified gap if the time limit is hit.
+  max_resupply_hours: null
+  report_resupply_hours: 8.0          # coverage KPI threshold when the objective does not use T
+  max_resupply_hours_status: assumption
+  n_hubs: 8
+  k_nearest_init: 25          # sparsification list size; exactness is verified, list grows if needed
+  time_limit_s: 60
+  mip_rel_gap: 0.0            # solve to proven optimality unless time limit hits
+
+inventory:
+  review_period_months: 3     # R: replenishment cycle
+  lead_time_months: 1         # L: order-to-delivery lead time
+  cycle_service_level: 0.99   # alpha: P(no stock-out during R+L)
+  status: assumption
+  vial_volume_l: 0.08         # cold-chain volume per packed vial
+  vial_volume_l_status: assumption
+
+product_choice:
+  # Quality weight of a product–species link (WHO 'Specificity' field).
+  specificity_weight:
+    "Immunizing venom species": 1.0
+    "Independent published evidence of paraspecificity": 0.8
+    "Manufacturer label claim of paraspecificity": 0.6
+    "Legacy: taxa was previously part of complex used for immunization": 0.5
+  specificity_weight_status: assumption
+  not_registered_factor: 0.9  # product not licensed/approved in the country (import needed)
+  sku_penalty: 1.0e-6         # tie-breaker per product: prefer fewer SKUs (lexicographic)
+
+scenarios:
+  envenomings_per_death: {low: 13.0, base: 20.5, high: 35.5}
+  p_antivenom_indicated: {low: 0.5, base: 0.75, high: 1.0}
+  initial_dose_vials: {low: 5, base: 10, high: 20}
+  repeat_dose_probability: {low: 0.1, base: 0.3, high: 0.6}
+  category2_weight: {low: 0.0, base: 0.1, high: 0.5}
+  avg_speed_kmh: {low: 25.0, base: 40.0, high: 60.0}
+
+population:
+  # Preference order of population sources per country.
+  # worldpop  : WorldPop 2020 1 km (UN-adjusted) rasters in data/external/worldpop/<iso3>.tif
+  # census_ind: Census of India 2011 (district tables + DataMeet 2011 boundaries),
+  #             areally interpolated to WHO ADM2 polygons
+  # geonames  : PROVISIONAL – GeoNames settlements >=500 people (undercounts rural)
+  order: [worldpop, census_ind, geonames]
+  urban_centre_density_per_km2: 1500   # Degree of Urbanisation (UN Statistical Commission 2020)

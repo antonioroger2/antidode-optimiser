@@ -1,20 +1,8 @@
 #!/bin/bash
+# Rebuild every processed input from data/raw, data/spatial and data/external.
 set -euo pipefail
-
-# Always navigate to repo root
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${REPO_ROOT}"
-
-# Detect python binary
-if [ -f ".venv/bin/python" ]; then
-    PYTHON=".venv/bin/python"
-elif [ -f "venv/bin/python" ]; then
-    PYTHON="venv/bin/python"
-else
-    PYTHON="python3"
-fi
-
-echo "=========================================================="
-echo " Executing Data Preprocessing & Optimization Build Pipeline"
-echo "=========================================================="
-"${PYTHON}" preprocess/build_master.py
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PY=${PYTHON:-python3}
+$PY preprocess/presence.py      # districts.csv, district_species.csv, species.csv
+$PY preprocess/antivenom.py     # antivenom_products.csv
+$PY preprocess/population.py    # district_population.csv (WorldPop > Census IND > GeoNames provisional)

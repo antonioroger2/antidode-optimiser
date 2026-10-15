@@ -11,6 +11,16 @@ A unified spatial-epidemiological framework, reproducible data processing pipeli
 
 ---
 
+
+## ⚙️ Model (2026 rebuild) — read this first
+
+* **Demand**: GBD-2019 snakebite deaths per country × envenomings-per-death (WHO-derived) × share needing antivenom, distributed to WHO ADM2 districts by rural (India: agricultural-worker) population living inside WHO species ranges. Every parameter is in `configs/model.yaml` with its status (observed / calibrated / assumption) and low–base–high scenarios.
+* **Products**: only WHO-catalogued antivenoms; per-country portfolio chosen by an exact ILP; species with no procurable product are reported, not stocked.
+* **Location**: exact p-median on course-hours (optionally coverage-first MCLP), solved with Lagrangian bounds + exact candidate elimination + HiGHS MILP. Each solution carries a lower bound, a gap and a `proven_optimal` flag.
+* **Inventory**: (R,S) order-up-to levels from the exact compound-Poisson distribution; optimal rationing under a national vial cap.
+* **Population**: India uses Census 2011 (real). Other countries are **provisional** (GeoNames settlements) until you run `./dataset/fetch_global_inputs.sh && ./scripts/run_pipeline.sh` (WorldPop 2020 + WHO ADM2 polygons).
+* Full audit and the list of applied fixes: `docs/MODEL_AUDIT.md`. Worldwide batch: `python3 scripts/run_world.py`.
+
 ## 🏛️ Modular Repository Architecture
 
 The codebase is organized into clean, dedicated modules following production standards:
