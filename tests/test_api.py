@@ -100,10 +100,53 @@ def test_patient_and_export(client, india):
 
 
 def test_provisional_country_flagged(client):
-    r = client.post("/api/optimize_stockrooms", json={"country": "NGA", "num_stockrooms": 5})
+    prov = [c for c in client.get("/api/countries").json
+            if c["population_provisional"] and (c["gbd2019_deaths"] or 0) > 10]
+    if not prov:
+        pytest.skip("no provisional country with burden left (all have WorldPop)")
+    r = client.post("/api/optimize_stockrooms", json={"country": prov[0]["ISO_3_CODE"], "num_stockrooms": 3})
     assert r.status_code == 200
     assert r.json["population_provisional"] is True and r.json["warnings"]
 
 
 def test_unknown_country(client):
     assert client.post("/api/optimize_stockrooms", json={"country": "Atlantis"}).status_code == 404
+
+
+def test_capacity_allocation(client, india):
+    target = india["total_national_vials_allocated"]
+    cap = int(max(h["total_vials_to_store"] for h in india["selected_stockroom_hubs"]) * 0.8)
+    supply = int(0.7 * target)
+    r = client.post("/api/capacity_allocation", json={"country": "India", "num_stockrooms": 8,
+                                                      "hub_capacity_vials": cap, "national_supply_vials": supply,
+                                                      "floor_courses": 1})
+    assert r.status_code == 200, r.json
+    A = r.json["allocation"]
+    assert A["summary"]["vials_allocated"] <= supply
+    for h in A["hubs"]:
+        assert h["allocated_vials"] <= cap
+        assert h["allocated_vials"] >= min(h["floor_vials"], h["target_vials"])   # dormant reserve kept
+    assert 0 < A["summary"]["network_fill_rate"] < 1
+    # unconstrained run reproduces the base solution
+    r = client.post("/api/capacity_allocation", json={"country": "India", "num_stockrooms": 8})
+    assert r.json["allocation"]["summary"]["vials_allocated"] == pytest.approx(target, rel=1e-3)
+
+
+def test_true_outage_keeps_other_hubs(client, india):
+    hub = india["selected_stockroom_hubs"][2]["district_id"]
+    r = client.post("/api/capacity_allocation", json={"country": "India", "num_stockrooms": 8,
+                                                      "disabled_hub_district": hub, "hub_capacity_pct": 100})
+    got = {h["district_id"] for h in r.json["selected_stockroom_hubs"]}
+    base = {h["district_id"] for h in india["selected_stockroom_hubs"]}
+    assert got == base - {hub}                                     # no replacement site
+    assert r.json["allocation"]["summary"]["network_fill_rate"] < 1.0
+
+
+def test_resilience_n_minus_1(client):
+    r = client.post("/api/resilience", json={"country": "Sri Lanka", "num_stockrooms": 3})
+    d = r.json
+    assert r.status_code == 200, d
+    assert len(d["rows"]) == 3
+    assert d["required_capacity_pct"] is None or d["required_capacity_pct"] >= 100
+    for row in d["rows"]:
+        assert 0 < row["fill_rate_at_capacity"] <= 1

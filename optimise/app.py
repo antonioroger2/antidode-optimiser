@@ -29,12 +29,14 @@ try:
     from .demand import load_tables, country_demand
     from .solver import (evaluate_emergency_dispatch, load_config, optimise_country, p_sweep,
                          sensitivity)
+    from .allocation import allocate
 except ImportError:
     import sys
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from optimise.demand import load_tables, country_demand  # type: ignore
     from optimise.solver import (evaluate_emergency_dispatch, load_config, optimise_country,  # type: ignore
                                  p_sweep, sensitivity)
+    from optimise.allocation import allocate  # type: ignore
 
 template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 app = Flask(__name__, template_folder=template_dir)
@@ -257,6 +259,118 @@ def simulate_scenario():
     out = dict(stressed)
     out.update({"scenario": st, "impact_vs_baseline": impact})
     return jsonify(_clean(out))
+
+
+@app.route("/api/capacity_allocation", methods=["POST"])
+def capacity_allocation():
+    """Fixed hubs (optionally with one disabled) -> capacitated routing + risk-prioritised stock."""
+    data = request.json or {}
+    try:
+        iso3 = _iso3(data.get("country", "India"))
+        ov = _params_from_request(data)
+        surge = float(data.get("surge_factor") or 1.0)
+        disabled = data.get("disabled_hub_district") or None
+        sol = _solve(iso3, ov, surge, None, None)
+        active_hubs = [h for h in sol["selected_stockroom_hubs"] if h["district_id"] != disabled] if disabled else sol["selected_stockroom_hubs"]
+        if disabled:
+            sol = dict(sol)
+            sol["selected_stockroom_hubs"] = active_hubs
+
+        # Capacity defaults to "as built": each hub sized to 100 % of its own optimal stock.
+        designed = [h["total_vials_to_store"] for h in active_hubs]
+        cap = data.get("hub_capacity_vials")
+        if data.get("hub_capacity_pct") not in (None, ""):
+            cap = [max(0.0, float(data["hub_capacity_pct"]) / 100.0 * x) for x in designed]
+        elif cap in (None, "", 0, "0"):
+            cap = None
+        else:
+            cap = float(cap)
+        sup = data.get("national_supply_vials")
+        if data.get("supply_pct") not in (None, ""):
+            sup = float(data["supply_pct"]) / 100.0 * sum(designed)
+        elif sup in (None, "", 0, "0"):
+            sup = None
+        else:
+            sup = float(sup)
+        floor = int(data.get("floor_courses") if data.get("floor_courses") not in (None, "") else 1)
+        res = allocate(iso3, load_config(ov), [h["district_id"] for h in active_hubs],
+                       hub_capacity_vials=cap, national_supply_vials=sup, floor_courses=floor, surge_factor=surge)
+    except KeyError as e:
+        return _err(e, 404)
+    except Exception as e:
+        return _err(e, 400)
+    out = dict(sol)
+    out["allocation"] = res
+    out["scenario"] = "capacity_allocation"
+    return jsonify(_clean(out))
+
+
+@app.route("/api/resilience", methods=["POST"])
+def resilience():
+    """N-1 resilience analysis: evaluate network performance if each hub fails in turn."""
+    data = request.json or {}
+    try:
+        iso3 = _iso3(data.get("country", "India"))
+        ov = _params_from_request(data)
+        surge = float(data.get("surge_factor") or 1.0)
+        sol = _solve(iso3, ov, surge, None, None)
+        cfg = load_config(ov)
+        hubs = sol["selected_stockroom_hubs"]
+        target_fill = float(data.get("target_fill") or 0.99)
+        test_cap_pct = float(data.get("hub_capacity_pct") or 100.0)
+        floor = int(data.get("floor_courses") if data.get("floor_courses") not in (None, "") else 1)
+
+        designed_map = {h["district_id"]: h["total_vials_to_store"] for h in hubs}
+
+        rows = []
+        for failed in hubs:
+            fid = failed["district_id"]
+            surviving = [h for h in hubs if h["district_id"] != fid]
+            surviving_ids = [h["district_id"] for h in surviving]
+            cap_tested = [designed_map[hid] * (test_cap_pct / 100.0) for hid in surviving_ids]
+
+            res_test = allocate(iso3, cfg, surviving_ids, hub_capacity_vials=cap_tested,
+                                floor_courses=floor, surge_factor=surge)
+            fill_test = res_test["summary"]["network_fill_rate"]
+            pct_rerouted = res_test["summary"]["pct_courses_rerouted"]
+
+            cap_needed = None
+            if fill_test >= target_fill:
+                cap_needed = int(test_cap_pct)
+            else:
+                for pct in [120, 140, 160, 180, 200, 250, 300]:
+                    cap_step = [designed_map[hid] * (pct / 100.0) for hid in surviving_ids]
+                    r_step = allocate(iso3, cfg, surviving_ids, hub_capacity_vials=cap_step,
+                                      floor_courses=floor, surge_factor=surge)
+                    if r_step["summary"]["network_fill_rate"] >= target_fill - 1e-4:
+                        cap_needed = pct
+                        break
+
+            rows.append({
+                "failed_hub": failed["district_name"],
+                "district_id": fid,
+                "state": failed["state_name"],
+                "fill_rate_at_capacity": round(fill_test, 4),
+                "pct_courses_rerouted": pct_rerouted,
+                "capacity_pct_needed": cap_needed,
+            })
+
+        worst = min(rows, key=lambda r: r["fill_rate_at_capacity"]) if rows else None
+        all_caps = [r["capacity_pct_needed"] for r in rows]
+        req_cap = None if any(c is None for c in all_caps) else (max(all_caps) if all_caps else None)
+
+        return jsonify(_clean({
+            "target_fill": target_fill,
+            "capacity_pct_tested": test_cap_pct,
+            "worst_case_hub": worst["failed_hub"] if worst else "",
+            "worst_case_fill_rate": worst["fill_rate_at_capacity"] if worst else 1.0,
+            "required_capacity_pct": req_cap,
+            "rows": rows
+        }))
+    except KeyError as e:
+        return _err(e, 404)
+    except Exception as e:
+        return _err(e, 400)
 
 
 @app.route("/api/p_sweep", methods=["POST"])

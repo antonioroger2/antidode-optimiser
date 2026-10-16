@@ -690,7 +690,7 @@
                     <i class="fa-solid fa-network-wired"></i> OR Optimizer
                 </button>
                 <button class="nav-tab" id="tab-scenario-btn" onclick="switchTab('scenario')">
-                    <i class="fa-solid fa-bolt-lightning"></i> Stress Simulator
+                    <i class="fa-solid fa-warehouse"></i> Capacity &amp; Stock
                 </button>
                 <button class="nav-tab" id="tab-species-btn" onclick="switchTab('species')">
                     <i class="fa-solid fa-dragon"></i> Species Presence
@@ -826,47 +826,83 @@
                 </div>
             </div>
 
-            <!-- TAB 2: STRESS SIMULATOR -->
+            <!-- TAB 2: CAPACITY & STOCK ALLOCATION -->
             <div id="panel-scenario" style="display: none;">
-                <div class="glass-card" style="margin-bottom: 0.85rem; border-color: rgba(245, 158, 11, 0.4);">
+                <div class="glass-card" style="margin-bottom: 0.85rem;">
                     <div class="card-header-title" style="color: var(--accent-amber);">
-                        <span><i class="fa-solid fa-bolt"></i> "What-If" Supply Chain Stress Test</span>
+                        <span><i class="fa-solid fa-warehouse"></i> Hub Capacity &amp; Stock Allocation</span>
                     </div>
-
+                    <p style="font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.6rem; line-height: 1.45;">
+                        Hubs stay where the location model put them. Give each hub a cold-storage limit and the country a total supply;
+                        demand that does not fit is re-routed to the next-best hub, every hub keeps a minimum emergency reserve,
+                        and remaining vials go first to the highest-risk catchments.
+                    </p>
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-snowflake"></i> Simulate Hub Outage / Power Failure</label>
-                        <select class="form-select" id="scenario-outage-select">
-                            <option value="">None (All Hubs Operational)</option>
-                        </select>
+                        <label class="form-label"><i class="fa-solid fa-lock"></i> Designed storage capacity per hub (vials) — from optimisation</label>
+                        <div id="alloc-designed-caps" style="font-size:0.7rem;line-height:1.5;background:rgba(0,0,0,0.25);border:1px solid var(--border-color);border-radius:8px;padding:0.45rem 0.6rem;max-height:150px;overflow-y:auto;color:var(--text-muted)">Run the optimiser first.</div>
                     </div>
-
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-lock"></i> National supply (vials) — optimal need of this network</label>
+                        <input type="text" class="form-input" id="alloc-designed-supply" readonly value="—" style="opacity:0.85;cursor:not-allowed">
+                    </div>
                     <div class="form-group">
                         <div class="range-slider-wrapper">
                             <label class="form-label">
-                                <span><i class="fa-solid fa-chart-line"></i> Seasonal Demand Multiplier</span>
-                                <span class="slider-val-badge" id="val-surge-factor">1.0x</span>
+                                <span><i class="fa-solid fa-snowflake"></i> Hub storage capacity (% of designed)</span>
+                                <span class="slider-val-badge" id="val-cap-pct">100%</span>
                             </label>
-                            <input type="range" class="range-slider" id="slider-surge-factor" min="1.0" max="3.5" step="0.5" value="1.0" oninput="updateSliderVal('val-surge-factor', this.value + 'x')">
+                            <input type="range" class="range-slider" id="alloc-cap-pct" min="30" max="150" step="5" value="100" oninput="updateSliderVal('val-cap-pct', this.value + '%'); refreshDesignedCaps()">
+                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem">100 % = each hub's cold room built exactly for its optimal stock.</div>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-hand-holding-dollar"></i> National Vial Cap (Supply Rationing)</label>
-                        <input type="number" class="form-input" id="scenario-vial-cap" placeholder="Unlimited (Demand-Driven)" min="1000" step="1000">
+                        <div class="range-slider-wrapper">
+                            <label class="form-label">
+                                <span><i class="fa-solid fa-boxes-packing"></i> National supply (% of need)</span>
+                                <span class="slider-val-badge" id="val-supply-pct">100%</span>
+                            </label>
+                            <input type="range" class="range-slider" id="alloc-supply-pct" min="20" max="100" step="5" value="100" oninput="updateSliderVal('val-supply-pct', this.value + '%'); refreshDesignedCaps()">
+                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem" id="alloc-target-hint"></div>
+                        </div>
                     </div>
-
-                    <button class="btn-action btn-danger" onclick="runCustomStressTest()">
-                        <i class="fa-solid fa-vial-virus"></i> Run Stress Simulation
+                    <div class="form-group">
+                        <div class="range-slider-wrapper">
+                            <label class="form-label">
+                                <span><i class="fa-solid fa-shield-heart"></i> National reserve kept at hubs (% of national need)</span>
+                                <span class="slider-val-badge" id="val-reserve-pct">8%</span>
+                            </label>
+                            <input type="range" class="range-slider" id="alloc-reserve-pct" min="0" max="30" step="1" value="8" oninput="updateSliderVal('val-reserve-pct', this.value + '%')">
+                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem">Pool shared equally by all hubs (each also keeps ≥ 1 full course); a hub never holds more than its own optimal stock, so reserve never becomes expiring surplus.</div>
+                            <input type="hidden" id="alloc-floor" value="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="range-slider-wrapper">
+                            <label class="form-label">
+                                <span><i class="fa-solid fa-chart-line"></i> Demand multiplier (season)</span>
+                                <span class="slider-val-badge" id="val-surge-factor">1.0x</span>
+                            </label>
+                            <input type="range" class="range-slider" id="slider-surge-factor" min="0.5" max="3.5" step="0.5" value="1.0" oninput="updateSliderVal('val-surge-factor', this.value + 'x')">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-plug-circle-xmark"></i> Hub out of service (optional)</label>
+                        <select class="form-select" id="scenario-outage-select">
+                            <option value="">None (all hubs operational)</option>
+                        </select>
+                    </div>
+                    <label style="font-size:0.66rem;color:var(--text-dim);display:flex;gap:0.35rem;align-items:center;margin-bottom:0.6rem">
+                        <input type="checkbox" id="alloc-relocate"> Re-optimise hub locations when a hub is out of service (default: other hubs stay fixed)
+                    </label>
+                    <button class="btn-action btn-primary" onclick="runCapacityAllocation()">
+                        <i class="fa-solid fa-calculator"></i> Allocate stock
+                    </button>
+                    <button class="btn-action btn-danger" style="margin-top:0.5rem" onclick="runResilience()">
+                        <i class="fa-solid fa-shield-halved"></i> N-1 resilience (every hub fails in turn)
                     </button>
                 </div>
-
                 <div id="scenario-impact-card" class="glass-card" style="display: none;">
-                    <div class="card-header-title" style="color: var(--accent-rose);">
-                        <i class="fa-solid fa-chart-pie"></i> Simulation Stress Impact
-                    </div>
-                    <div id="scenario-impact-content" style="font-size: 0.8rem; line-height: 1.5;">
-                        <!-- Dynamic Impact Content -->
-                    </div>
+                    <div id="scenario-impact-content" style="font-size: 0.75rem; line-height: 1.5;"></div>
                 </div>
             </div>
 
@@ -1299,6 +1335,9 @@
             gapEl.textContent = opt.proven_optimal ? 'PROVEN OPTIMAL' : (opt.gap == null ? 'heuristic' : `gap ${(100*opt.gap).toFixed(3)}%`);
             gapEl.style.color = opt.proven_optimal ? 'var(--accent-emerald)' : 'var(--accent-amber)';
             renderCertificate(data);
+            if (data.scenario !== 'capacity_allocation' && !data.allocation) { designedNetwork = data; refreshDesignedCaps(); }
+            const hint = document.getElementById('alloc-target-hint');
+            if (hint) hint.textContent = `100 % = ${(data.total_national_vials_allocated || 0).toLocaleString()} vials (optimal need of this network)`;
             document.getElementById('top-kpi-vials').textContent = (data.total_national_vials_allocated || 0).toLocaleString();
             document.getElementById('top-kpi-liters').textContent = (data.total_national_cold_chain_liters || 0).toLocaleString() + ' L';
             document.getElementById('top-kpi-scenario').textContent = (data.scenario || 'BASELINE').toUpperCase();
@@ -1712,63 +1751,148 @@
 
         // Scenario Preset Handlers
         function runScenarioPreset(preset) {
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
             if (preset === 'monsoon_surge') {
                 executeStockroomOptimization({ scenario: 'seasonal_surge', surge_factor: 2.5 });
             } else if (preset === 'hub_outage') {
                 switchTab('scenario');
-                document.getElementById('scenario-outage-select').selectedIndex = 1;
-                runCustomStressTest();
+                const sel = document.getElementById('scenario-outage-select');
+                if (sel.options.length > 1) sel.selectedIndex = 1;
+                runCapacityAllocation();
             } else if (preset === 'supply_constrained') {
-                const target = currentSolutionData ? currentSolutionData.total_national_vials_allocated : 0;
-                executeStockroomOptimization({ scenario: 'supply_constrained', total_vial_cap: Math.max(1, Math.round(0.6 * target)) });
+                switchTab('scenario');
+                document.getElementById('alloc-supply-pct').value = 60;
+                updateSliderVal('val-supply-pct', '60%');
+                runCapacityAllocation();
             } else {
+                [['alloc-cap-pct', 'val-cap-pct'], ['alloc-supply-pct', 'val-supply-pct']].forEach(([i, l]) => {
+                    document.getElementById(i).value = 100; updateSliderVal(l, '100%'); });
+                document.getElementById('scenario-outage-select').selectedIndex = 0;
                 executeStockroomOptimization({ scenario: 'baseline', surge_factor: 1.0 });
             }
         }
 
-        // Run Custom Stress Test
-        async function runCustomStressTest() {
-            const country = document.getElementById('optimizer-country-select').value;
-            const disabledHub = document.getElementById('scenario-outage-select').value;
-            const surgeFactor = parseFloat(document.getElementById('slider-surge-factor').value) || 1.0;
-            const vialCap = parseInt(document.getElementById('scenario-vial-cap').value) || null;
+        // Capacity & stock allocation (post-location)
+        async function runCapacityAllocation() {
             const maxT = parseFloat(document.getElementById('slider-golden-time').value);
+            const num = id => { const v = document.getElementById(id).value; return v === '' ? null : Number(v); };
             const payload = {
-                country: country,
+                country: document.getElementById('optimizer-country-select').value,
                 num_stockrooms: parseInt(document.getElementById('slider-k-hubs').value) || 8,
                 max_resupply_hours: maxT > 0 ? maxT : null,
                 service_level: parseFloat(document.getElementById('optimizer-service-level').value) || 0.99,
                 envenomings_per_death: parseFloat(document.getElementById('optimizer-rho').value),
                 initial_dose_vials: parseInt(document.getElementById('optimizer-dose').value),
-                scenario_type: 'custom',
-                disabled_hub_district: disabledHub || null,
-                surge_factor: surgeFactor,
-                total_vial_cap: vialCap
+                surge_factor: parseFloat(document.getElementById('slider-surge-factor').value) || 1.0,
+                disabled_hub_district: document.getElementById('scenario-outage-select').value || null,
+                hub_capacity_pct: parseFloat(document.getElementById('alloc-cap-pct').value),
+                supply_pct: parseFloat(document.getElementById('alloc-supply-pct').value),
+                floor_courses: 1,
+                reserve_pct_national: parseFloat(document.getElementById('alloc-reserve-pct').value),
+                relocate_failed_hub: document.getElementById('alloc-relocate').checked
             };
-            const res = await fetch('/api/simulate_scenario', {
+            const card = document.getElementById('scenario-impact-card');
+            const box = document.getElementById('scenario-impact-content');
+            card.style.display = 'block';
+            box.innerHTML = '<i>Solving… (first run for a country can take ~15 s)</i>';
+            const res = await fetch('/api/capacity_allocation', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             });
             const data = await res.json();
-            if (data.error) { showSolverError(data.error); return; }
+            if (data.error) { box.innerHTML = `<div style="color:var(--accent-rose)">${data.error}</div>`; return; }
+            const keepOutage = payload.disabled_hub_district;
             currentSolutionData = data;
             renderOptimizationResults(data);
-            const imp = data.impact_vs_baseline || {};
-            const r = imp.rationing;
-            const impactCard = document.getElementById('scenario-impact-card');
-            const impactContent = document.getElementById('scenario-impact-content');
-            impactCard.style.display = 'block';
-            impactContent.innerHTML = `
-                <div>Demand multiplier: <b style="color: var(--primary);">${surgeFactor}×</b></div>
-                ${disabledHub ? `<div style="color: var(--accent-rose);">Hub excluded (y=0): <b>${disabledHub}</b></div>` : ''}
-                <div>Δ mean resupply time / course: <b>${imp.delta_mean_resupply_hours_per_course.toFixed(3)} h</b></div>
-                ${imp.delta_pct_within_standard == null ? '' : `<div>Δ courses within standard: <b>${imp.delta_pct_within_standard.toFixed(2)} pp</b></div>`}
-                <div>Δ vials stocked: <b>${imp.delta_total_vials.toLocaleString()}</b></div>
-                <div>Hubs changed: <b>${(imp.hubs_changed || []).join(', ') || 'none'}</b></div>
-                ${r ? `<div style="margin-top:0.4rem;color:var(--accent-amber)">Cap ${r.cap_vials.toLocaleString()} &lt; target ${r.target_vials.toLocaleString()} vials → optimal rationing; expected shortfall ${Math.round(r.expected_vials_short_per_cycle).toLocaleString()} vials per cycle.</div>` : ''}
-                <div style="margin-top: 0.5rem; font-size: 0.72rem; color: var(--text-muted);">Re-solved exactly with the same certificate; deltas are against the baseline with identical parameters.</div>
-            `;
+            if (keepOutage) {
+                const sel = document.getElementById('scenario-outage-select');
+                if (![...sel.options].some(o => o.value === keepOutage)) sel.add(new Option(`OFFLINE: ${keepOutage.split('|').pop()}`, keepOutage));
+                sel.value = keepOutage;
+            }
+            const A = data.allocation, S = A.summary;
+            const pct = x => x == null ? '—' : `${x}%`;
+            const rows = A.hubs.map(h => `
+                <tr>
+                    <td><b>#${h.hub_id} ${h.district_name}</b><div style="font-size:0.62rem;color:var(--text-dim)">${h.state_name}</div></td>
+                    <td>${h.target_vials.toLocaleString()}</td>
+                    <td style="color:var(--primary);font-weight:800">${h.allocated_vials.toLocaleString()}</td>
+                    <td>${h.capacity_vials == null ? '∞' : pct(h.utilisation_pct)}</td>
+                    <td style="color:${h.fill_rate < 0.9 ? 'var(--accent-rose)' : 'var(--accent-emerald)'}">${(100 * h.fill_rate).toFixed(1)}%</td>
+                    <td>${h.nearest_demand_kept_pct == null ? '—' : pct(h.nearest_demand_kept_pct)}</td>
+                </tr>`).join('');
+            const rr = (A.rerouted_districts || []).slice(0, 12).map(r =>
+                `<div>${r.district} (${r.state}): ${Object.entries(r.served_by).map(([k, v]) => `${k} ${(100 * v).toFixed(0)}%`).join(', ')}</div>`).join('');
+            box.innerHTML = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-bottom:0.6rem">
+                    <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Vials allocated / needed</div><b>${S.vials_allocated.toLocaleString()} / ${S.vials_target_unconstrained.toLocaleString()}</b></div>
+                    <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Network fill rate</div><b style="color:${S.network_fill_rate < 0.9 ? 'var(--accent-rose)' : 'var(--accent-emerald)'}">${(100 * S.network_fill_rate).toFixed(1)}%</b></div>
+                    <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Courses re-routed (capacity)</div><b>${S.pct_courses_rerouted}%</b></div>
+                    <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Hubs at capacity</div><b>${S.hubs_at_capacity} / ${A.hubs.length}</b></div>
+                </div>
+                ${S.floors_feasible ? '' : '<div style="color:var(--accent-rose);margin-bottom:0.4rem">⚠ Capacity or supply is below the minimum reserve at some hubs – reserves were reduced.</div>'}
+                ${S.network_overloaded ? '<div style="color:var(--accent-amber);margin-bottom:0.4rem">Total hub storage is below average demand: every hub runs at capacity and the shortage appears as lower fill rates.</div>' : ''}
+                ${S.courses_unrouted_per_year > 0 ? `<div style="color:var(--accent-rose)">⚠ ${S.courses_unrouted_per_year} courses/yr cannot be routed to any hub (total capacity too small).</div>` : ''}
+                <table class="manifest-table" style="width:100%;font-size:0.68rem">
+                    <thead><tr><th>Hub</th><th>Needed</th><th>Allocated</th><th>Storage used</th><th>Fill rate</th><th>Own demand kept</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                ${rr ? `<div style="margin-top:0.5rem;font-size:0.66rem;color:var(--text-muted)"><b>Re-routed districts (capacity overflow):</b>${rr}</div>` : ''}
+                <div style="margin-top:0.5rem;font-size:0.64rem;color:var(--text-dim)">Fill rate = expected share of vials demanded in a cycle that the hub can supply. ${A.method}.</div>`;
         }
+
+        async function runResilience() {
+            const card = document.getElementById('scenario-impact-card');
+            const box = document.getElementById('scenario-impact-content');
+            card.style.display = 'block';
+            box.innerHTML = '<i>Running N-1: each hub removed in turn, capacity searched by bisection (≈20–60 s)…</i>';
+            const maxT = parseFloat(document.getElementById('slider-golden-time').value);
+            const payload = {
+                country: document.getElementById('optimizer-country-select').value,
+                num_stockrooms: parseInt(document.getElementById('slider-k-hubs').value) || 8,
+                max_resupply_hours: maxT > 0 ? maxT : null,
+                service_level: parseFloat(document.getElementById('optimizer-service-level').value) || 0.99,
+                envenomings_per_death: parseFloat(document.getElementById('optimizer-rho').value),
+                initial_dose_vials: parseInt(document.getElementById('optimizer-dose').value),
+                surge_factor: parseFloat(document.getElementById('slider-surge-factor').value) || 1.0,
+                hub_capacity_pct: parseFloat(document.getElementById('alloc-cap-pct').value),
+                floor_courses: 1,
+                reserve_pct_national: parseFloat(document.getElementById('alloc-reserve-pct').value),
+                target_fill: 0.99
+            };
+            const res = await fetch('/api/resilience', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const d = await res.json();
+            if (d.error) { box.innerHTML = `<div style="color:var(--accent-rose)">${d.error}</div>`; return; }
+            const rows = d.rows.map(r => `<tr>
+                <td><b>${r.failed_hub}</b><div style="font-size:0.62rem;color:var(--text-dim)">${r.state}</div></td>
+                <td style="color:${r.fill_rate_at_capacity < d.target_fill ? 'var(--accent-rose)' : 'var(--accent-emerald)'}">${(100 * r.fill_rate_at_capacity).toFixed(1)}%</td>
+                <td>${r.pct_courses_rerouted}%</td>
+                <td style="font-weight:800;color:var(--primary)">${r.capacity_pct_needed == null ? '>300%' : r.capacity_pct_needed + '%'}</td></tr>`).join('');
+            box.innerHTML = `
+                <div class="glass-card" style="padding:0.6rem;margin-bottom:0.6rem;text-align:center">
+                    <div style="font-size:0.65rem;color:var(--text-dim)">Capacity every hub needs so that ANY single failure keeps ${(100 * d.target_fill).toFixed(0)}% fill</div>
+                    <div style="font-size:1.4rem;font-weight:800;color:var(--accent-amber)">${d.required_capacity_pct == null ? 'not reachable ≤300%' : d.required_capacity_pct + '% of designed'}</div>
+                    <div style="font-size:0.65rem;color:var(--text-dim)">Worst case: losing ${d.worst_case_hub} → ${(100 * d.worst_case_fill_rate).toFixed(1)}% fill at ${d.capacity_pct_tested}% capacity</div>
+                </div>
+                <table class="manifest-table" style="width:100%;font-size:0.68rem">
+                    <thead><tr><th>Hub that fails</th><th>Fill at ${d.capacity_pct_tested}%</th><th>Rerouted</th><th>Capacity needed</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <div style="margin-top:0.5rem;font-size:0.64rem;color:var(--text-dim)">Other hubs stay at their designed sites; their districts absorb the failed hub's catchment by capacitated re-routing.</div>`;
+        }
+
+        let designedNetwork = null;
+        function refreshDesignedCaps() {
+            const box = document.getElementById('alloc-designed-caps');
+            const sup = document.getElementById('alloc-designed-supply');
+            if (!designedNetwork || !box) return;
+            const cp = parseFloat(document.getElementById('alloc-cap-pct').value) / 100;
+            const sp = parseFloat(document.getElementById('alloc-supply-pct').value) / 100;
+            box.innerHTML = designedNetwork.selected_stockroom_hubs.map(h =>
+                `<div style="display:flex;justify-content:space-between"><span>#${h.hub_id} ${h.district_name}</span>
+                 <span><b>${h.total_vials_to_store.toLocaleString()}</b>${cp !== 1 ? ` → <span style="color:var(--accent-amber)">${Math.round(cp * h.total_vials_to_store).toLocaleString()}</span>` : ''}</span></div>`).join('');
+            const tot = designedNetwork.total_national_vials_allocated || 0;
+            sup.value = sp !== 1 ? `${tot.toLocaleString()}  →  ${Math.round(sp * tot).toLocaleString()} available (${Math.round(sp * 100)}%)` : tot.toLocaleString();
+        }
+
+        function runCustomStressTest() { switchTab('scenario'); return runCapacityAllocation(); }
 
         function showSolverError(msg) {
             const el = document.getElementById('optimizer-cert-content');

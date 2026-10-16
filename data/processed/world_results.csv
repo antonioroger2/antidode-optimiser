@@ -1,0 +1,149 @@
+iso3,country,districts,hubs,gbd_deaths,courses_per_year,courses_no_effective_antivenom,vials_stocked,mean_resupply_h,pct_within_8h,proven_optimal,gap,status,heuristic_excess_pct,population_provisional,seconds,portfolio
+AFG,Afghanistan,399,10.0,110.0,1689.8,1.45,10890.0,2.557,99.8,True,0.0,lagrangian_gap_closed,-0.0,False,0.15,Hexavalent snake venom hexavalent immunoglobulin ; Polyvalent Antisnake Venom Serum
+AGO,Angola,162,6.0,87.0,1131.88,205.74,6780.0,4.94,86.77,True,0.0,Optimal,2.0003,False,0.14,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+ARE,United Arab Emirates,9,2.0,2.8,43.05,0.0,460.0,1.292,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Pentavalent snake antivenom immunoglobulin ; Polyvalent Snake Antivenom  - Equine
+ARG,Argentina,510,11.0,3.2,47.01,2.19,930.0,4.624,85.73,True,0.0,lagrangian_gap_closed,0.0,False,0.17,Antiveneno Micrurus ; Soro Anti-botropico-laquetico ; Suero Anticoral Polivalente ; Suero Antiofidico Polivalente BIOL ; Suero Antiofidico Polivalente Botropico/Crotalico ; Suero Bothropico Tetravalente
+ARM,Armenia,40,3.0,1.0,12.26,3.11,200.0,1.086,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,SnaFab5
+AUS,Australia,89,5.0,1.3,19.98,0.01,320.0,8.547,66.82,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Seqirus Polyvalent antivenom
+AUT,Austria,99,5.0,1.0,15.38,0.0,280.0,1.616,100.0,True,0.0,Optimal,0.0677,False,0.07,Antiviperine sera
+AZE,Azerbaijan,77,4.0,1.0,11.91,3.47,210.0,2.137,100.0,True,0.0,Optimal,1.8278,False,0.15,SnaFab5
+BDI,Burundi,47,3.0,102.0,1481.01,87.24,7900.0,1.209,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+BEL,Belgium,44,3.0,1.0,15.38,0.0,230.0,1.184,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+BEN,Benin,86,5.0,108.0,1631.95,28.55,9490.0,1.734,100.0,True,0.0,lagrangian_gap_closed,1.2238,False,0.06,Anti Snake Venom Serum Pan Africa (10) I.H.S. ; Antivipmyn® Africa ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+BFA,Burkina Faso,70,4.0,279.0,4139.49,150.14,20730.0,3.141,100.0,True,0.0,lagrangian_gap_closed,3.3143,False,0.05,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+BGD,Bangladesh,64,4.0,1170.0,12356.88,5631.87,60730.0,2.535,100.0,True,0.0,lagrangian_gap_closed,0.6733,False,0.05,Green Pit Viper Antivenin (QSMI) ; Neuro-polyvalent snake antivenom (QSMI) ; Snake Venom Antiserum I.P. (Asia)
+BHR,Bahrain,4,1.0,1.0,15.38,0.0,150.0,0.21,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.06,Polyvalent Snake Antivenom  - Equine
+BIH,Bosnia and Herzegovina,18,2.0,1.0,15.37,0.0,190.0,1.704,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Antiviperine sera
+BLR,Belarus,119,5.0,1.2,18.45,0.0,300.0,2.48,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+BLZ,Belize,6,1.0,1.0,12.3,3.08,150.0,2.008,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.04,Antivipmyn® ; PoliVal-ICP Lyophilized
+BOL,Bolivia (Plurinational State of),112,5.0,14.0,180.28,34.97,1950.0,3.995,85.55,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Anti-Micruricos-Corales ; Soro Anti-botropico-laquetico ; Soro Antielapidico ; Suero Antibotrópico Polivalente ; Suero Antiofidico Polivalente BIOL ; Suero Antiofidico Polivalente Botropico/Crotalico ; Suero Antiofidico Polivalente Botropico/Laquesico
+BRA,Brazil,5570,20.0,233.0,3277.18,305.19,22710.0,6.069,75.29,False,0.010989341950172676,MILP skipped (n×m'=30512640 > 1500000); certified gap from Lagrangian bound,-0.0,False,507.7,Anti-Micruricos-Corales ; Soro Antibotropico IVB ; Soro Antibotropico-crotalico ; Soro Antielapidico ; Suero Antibotrópico Polivalente ; Suero Antiofidico Polivalente BIOL
+BRN,Brunei Darussalam,39,3.0,1.0,10.85,4.52,190.0,0.332,100.0,True,0.0,lagrangian_gap_closed,0.7962,False,0.1,Neuro-polyvalent snake antivenom (QSMI)
+BTN,Bhutan,20,2.0,8.3,34.7,92.91,430.0,1.702,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Green Pit Viper Antivenin (QSMI) ; Neuro-polyvalent snake antivenom (QSMI) ; Snake Venom Antiserum I.P. (Asia)
+BWA,Botswana,24,2.0,6.5,91.35,8.59,730.0,4.594,83.18,True,0.0,lagrangian_gap_closed,0.0,False,0.03,SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+CAF,Central African Republic,35,3.0,97.0,1412.74,78.64,7540.0,5.172,88.75,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+CAN,,218,,,,,,,,,,ERROR AssertionError: CAN: demand not conserved in species split,,,,
+CHN,China,343,9.0,223.0,2320.83,1107.79,15990.0,8.339,51.95,True,0.0,Optimal,0.5376,False,0.28,Agkistrodon halys antivenin ; Anti-Viper (Russell's viper) ; Antivenom B. multicinctus/N.n.naja ; Antivenom Tr. mucrosquamatus/stejnegeri ; Green Pit Viper Antivenin (QSMI) ; Kovax Freeze-Dried Agkistrodon[Korean mamushi] Antivenom[Equine] ; Monovalent Antivenin Snorkel Viper ; Neuro-polyvalent snake antivenom (QSMI) ; ViperaTAb®
+CIV,Côte D’Ivoire,113,5.0,256.0,3743.58,192.42,19790.0,3.017,99.13,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+CMR,Cameroon,200,7.0,264.0,3829.8,229.2,21190.0,2.537,99.66,True,0.0,lagrangian_gap_closed,0.0,False,0.06,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+COD,Democratic Republic of the Congo,519,11.0,545.0,7806.59,572.79,40050.0,4.987,84.31,True,0.0,lagrangian_gap_closed,-0.0,False,0.27,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+COG,Congo,52,4.0,40.0,537.18,77.82,3690.0,2.179,96.22,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Antivipmyn® Africa ; Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+COL,Colombia,1121,17.0,50.0,690.16,78.59,7230.0,2.264,98.72,False,0.006281256005805892,Time limit reached,0.0,False,65.79,CoRal-ICP Liquid ; PoliVal-ICP Lyophilized ; Soro Antibotropico-crotalico ; Suero Antibotrópico Polivalente ; Suero Anticoral Polivalente ; Suero Antiofidico Polivalente Liofilizado ; Suero Antiofidico Polivalente ; Suero Antiofídico (SAOP)
+CRI,Costa Rica,81,4.0,3.9,55.56,4.4,740.0,1.355,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.06,CoRal-ICP Liquid ; PoliVal-ICP Lyophilized ; Suero Anticoral Polivalente ; Suero Antiofidico Polivalente
+CZE,Czech Republic,98,5.0,1.2,18.45,0.0,300.0,1.557,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+DEU,Germany,40,3.0,2.5,38.44,0.0,400.0,4.24,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Antiviperine sera
+DJI,Djibouti,6,1.0,7.1,106.93,2.23,790.0,1.823,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Anti-Snake Serum (Polyvalent) ; Antivipmyn® Africa ; SAIMR Boomslang antivenom
+DNK,Denmark,11,2.0,1.0,15.37,0.0,190.0,2.086,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+DZA,Algeria,48,3.0,9.4,139.87,4.65,1110.0,5.875,79.53,True,0.0,lagrangian_gap_closed,0.0,False,0.04,IPAVIP* ; Inoserp™ MENA
+ECU,Ecuador,221,7.0,24.0,321.99,47.01,3390.0,1.953,99.91,True,0.0,lagrangian_gap_closed,-0.0,False,0.07,PoliVal-ICP Lyophilized ; Soro Antibotropico-crotalico ; Suero Antibotrópico Polivalente ; Suero Anticoral Polivalente ; Suero Antiofidico Bothropico Polivalente ; Suero Antiofidico Polivalente Liofilizado ; Suero Antiofidico Polivalente
+EGY,Egypt,364,10.0,10.0,153.7,0.05,1840.0,1.57,98.63,True,0.0,lagrangian_gap_closed,1.2792,False,0.2,Anti-Snake Serum (Polyvalent) ; Anti-Vipers Serum (Polyvalent) ; Inoserp™ MENA
+ERI,Eritrea,58,4.0,73.0,1109.17,13.21,7050.0,1.836,98.14,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Anti-Snake Serum (Polyvalent) ; Antivipmyn® Africa ; Inoserp™ MENA ; SAIMR Boomslang antivenom
+ESP,Spain,52,4.0,1.9,24.36,4.85,390.0,3.843,88.97,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Inoserp™ MENA ; ViperaFAV
+EST,Estonia,212,7.0,1.0,15.38,0.0,330.0,0.86,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.06,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+ETH,Ethiopia,109,5.0,499.0,7376.9,295.23,38550.0,4.604,88.25,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Anti-Snake Serum (Polyvalent) ; Antivipmyn® Africa ; SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+FIN,Finland,19,2.0,1.0,15.38,0.0,180.0,4.359,88.43,True,0.0,lagrangian_gap_closed,-0.0,False,0.04,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+FRA,France,22,2.0,2.3,35.35,0.01,340.0,7.347,54.37,True,0.0,lagrangian_gap_closed,0.859,False,0.04,Antiviperine sera ; ViperaFAV
+GAB,Gabon,51,4.0,17.0,187.09,74.28,1620.0,2.104,98.93,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom ; Snake Venom Antiserum (Africa)
+GBR,The United Kingdom,17,2.0,1.0,15.38,0.0,190.0,4.323,94.18,True,0.0,lagrangian_gap_closed,0.0,False,0.04,ViperaTAb®
+GEO,Georgia,72,4.0,1.0,8.98,6.4,250.0,1.168,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,"SnaFab6 ; VIPER VENOM ANTISERUM, EUROPEAN (EQUINE)  (Croatian name: ANTITOKSIN ZA OTROV EUROPSKIH ZMIJA (konjski))"
+GHA,Ghana,260,8.0,245.0,3369.98,396.9,18870.0,2.077,100.0,True,0.0,Optimal,0.2656,False,0.61,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom ; Snake Venom Antiserum (Africa)
+GIN,Guinea,39,3.0,191.0,2649.25,287.37,13570.0,3.703,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+GMB,Gambia,7,1.0,9.4,127.71,16.81,810.0,2.855,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.03,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+GNB,Guinea-Bissau,11,2.0,16.0,234.18,11.82,1510.0,1.507,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.03,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+GNQ,Equatorial Guinea,19,2.0,5.7,75.9,11.74,570.0,1.79,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa)
+GRC,Greece,52,4.0,1.0,15.24,0.13,260.0,2.765,94.27,True,0.0,lagrangian_gap_closed,0.3884,False,0.05,Viekvin®
+GTM,Guatemala,331,9.0,10.0,148.81,4.94,1640.0,1.189,100.0,True,0.0,Optimal,1.2058,False,12.07,Antivipmyn® ; Coralmyn ; PoliVal-ICP Lyophilized ; Suero Antiofidico Polivalente
+GUY,Guyana,26,3.0,8.6,119.75,12.48,1070.0,1.642,96.95,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Soro Antibotropico-crotalico ; Suero Anticoral Polivalente ; Suero Antiofidico Polivalente
+HND,Honduras,298,9.0,5.3,70.77,10.72,1070.0,1.191,100.0,True,0.0,Optimal,1.5951,False,3.65,CoRal-ICP Liquid ; PoliVal-ICP Lyophilized
+HRV,Croatia,117,5.0,1.0,15.37,0.0,350.0,1.438,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,"Antiviperine sera ; VIPER VENOM ANTISERUM, EUROPEAN (EQUINE)  (Croatian name: ANTITOKSIN ZA OTROV EUROPSKIH ZMIJA (konjski))"
+IDN,Indonesia,518,11.0,149.0,1946.82,344.05,12210.0,5.45,80.89,True,0.0,Optimal,1.5902,False,0.89,Haemato-polyvalent snake antivenom (QSMI) ; Neuro-polyvalent snake antivenom (QSMI) ; Seqirus Polyvalent antivenom ; Serum Anti Bisa Ular Polivalen / Bio Save
+IND,India,813,14.0,51100.0,763732.12,21930.38,3384870.0,5.576,83.36,True,6.371326558949412e-16,Optimal,0.1537,False,12.34,Antivenom Tr. mucrosquamatus/stejnegeri ; Green Pit Viper Antivenin (QSMI) ; Neuro-polyvalent snake antivenom (QSMI) ; Polyvalent Antisnake Venom Serum ; Polyvalent Snake Antivenin (Asia) ; SnaFab6
+IRN,Iran (Islamic Republic of),433,10.0,42.0,600.63,45.12,4440.0,4.378,90.49,True,0.0,Optimal,1.9629,False,26.26,Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine ; SnaFab6
+IRQ,Iraq,148,6.0,13.0,199.88,0.0,2010.0,2.347,99.31,True,0.0,lagrangian_gap_closed,0.2399,False,0.13,"Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine ; Serum against snake venoms gyurza, efa, cobra polyvalent horse purified concentrated liquid"
+ISR,Israel,14,2.0,1.0,14.75,0.62,280.0,1.392,100.0,True,0.0,lagrangian_gap_closed,1.6421,False,0.05,Echis coloratus Antiserum (Equine source) ; Inoserp™ MENA ; Vipera palaestinae Antiserum (Equine source)
+ITA,Italy,107,5.0,2.8,43.05,0.0,510.0,3.275,95.74,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Antiviperine sera
+JOR,Jordan,21,2.0,2.1,31.68,0.61,440.0,1.79,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine ; Snake Venom Antitoxin (Menaven) ; Vipera palaestinae Antiserum (Equine source)
+JPN,Japan,1892,20.0,2.4,33.68,3.22,800.0,1.74,99.84,False,0.006205003727379814,MILP skipped (n×m'=2409988 > 1500000); certified gap from Lagrangian bound,0.0,False,38.87,"Freeze-dried Habu antivenom ""KMB"" ; Freeze-dried Mamushi antivenom ""KMB"""
+KAZ,Kazakhstan,218,7.0,2.5,9.51,28.93,280.0,2.989,92.27,True,0.0,lagrangian_gap_closed,-0.0,False,0.06,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID ; Agkistrodon halys antivenin ; Hexavalent snake venom hexavalent immunoglobulin"
+KEN,Kenya,316,9.0,349.0,4720.81,645.07,26730.0,2.189,98.59,True,0.0,Optimal,1.1144,False,0.27,Anti-Vipers Serum (Polyvalent) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom ; Snake Venom Antiserum (Africa)
+KGZ,Kyrgyzstan,42,3.0,1.0,0.01,15.36,0.0,0.143,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,SnaFab6
+KHM,Cambodia,197,7.0,1.7,26.04,0.1,600.0,1.691,100.0,True,0.0,lagrangian_gap_closed,0.8152,False,0.1,Green Pit Viper Antivenin (QSMI) ; Haemato-polyvalent snake antivenom (QSMI) ; Neuro-polyvalent snake antivenom (QSMI)
+KOR,Republic Of Korea,229,8.0,6.4,83.48,14.92,950.0,1.332,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.06,"Freeze-dried Mamushi antivenom ""KMB"" ; Kovax Freeze-Dried Agkistrodon[Korean mamushi] Antivenom[Equine]"
+KWT,Kuwait,6,1.0,1.0,15.38,0.0,150.0,1.089,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Polyvalent Snake Antivenom  - Equine
+LAO,Lao People's Democratic Republic,148,6.0,21.0,256.72,66.16,2630.0,2.278,100.0,True,0.0,lagrangian_gap_closed,0.8416,False,0.07,Antivenom B. multicinctus/N.n.naja ; Antivenom Tr. mucrosquamatus/stejnegeri ; Green Pit Viper Antivenin (QSMI) ; Neuro-polyvalent snake antivenom (QSMI) ; Serum Anti Bisa Ular Polivalen / Bio Save
+LBN,Lebanon,26,3.0,1.0,14.46,0.92,300.0,0.672,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Gamma-Vip ; Vipera palaestinae Antiserum (Equine source)
+LBR,Liberia,93,5.0,42.0,577.11,68.64,3540.0,1.7,100.0,True,0.0,lagrangian_gap_closed,0.8301,False,0.06,Combipack of snake venom antiserum with sterile water for injection (Pan Africa)
+LBY,Libya,40,3.0,2.2,33.83,0.0,370.0,4.717,81.11,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Anti-Vipers Serum (Polyvalent) ; Inoserp™ MENA
+LCA,Saint Lucia,9,2.0,1.0,15.38,0.0,190.0,0.192,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,PoliVal-ICP Lyophilized
+LKA,Sri Lanka,26,3.0,52.0,547.75,251.75,3150.0,1.817,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Snake Venom Antiserum I.P. (Asia)
+LSO,Lesotho,10,2.0,1.0,15.38,0.0,230.0,1.289,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+LTU,Lithuania,56,4.0,1.0,15.38,0.0,250.0,1.356,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+LVA,Latvia,119,5.0,1.0,15.38,0.0,290.0,1.329,100.0,True,0.0,Optimal,1.0325,False,0.08,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+MAR,Morocco,79,4.0,17.0,255.37,6.01,1730.0,3.352,97.08,True,0.0,lagrangian_gap_closed,0.5354,False,0.04,Inoserp™ MENA
+MEX,Mexico,2454,20.0,69.0,754.16,306.71,7950.0,2.664,97.87,False,0.018732276694069877,MILP skipped (n×m'=5229802 > 1500000); certified gap from Lagrangian bound,0.0,True,48.41,Anavip® ; Antivipmyn® ; Coralmyn ; CroFab (Crotalidae Polyvalent Immune Fab (Ovine)) ; Faboterapico Polivalente Antiviperino ; North American Coral Snake Antivenin (Equine) ; PoliVal-ICP Lyophilized ; Suero Antiofidico Centroamericano BIOL ; Suero Antiofidico Polivalente
+MKD,North Macedonia,80,4.0,1.0,15.38,0.0,240.0,0.902,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.06,Antiviperine sera
+MLI,Mali,75,4.0,234.0,3404.06,193.69,17290.0,4.983,94.94,True,0.0,lagrangian_gap_closed,2.8428,False,0.07,Anti-Vipers Serum (Polyvalent) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+MMR,Myanmar,331,9.0,171.0,2001.07,628.05,13600.0,3.051,98.51,True,0.0,lagrangian_gap_closed,0.964,False,0.16,Anti-Viper (Russell's viper) ; Antivenom Tr. mucrosquamatus/stejnegeri ; Green Pit Viper Antivenin (QSMI) ; Malayan pit viper antivenin (QSMI) ; Neuro-polyvalent snake antivenom (QSMI) ; Siamese cobra antivenin ; Snake Venom Antiserum I.P. (Asia)
+MNG,Mongolia,339,9.0,1.0,15.37,0.0,390.0,3.122,94.15,True,0.0,lagrangian_gap_closed,-0.0,False,0.15,Agkistrodon halys antivenin ; Viekvin®
+MOZ,Mozambique,130,6.0,102.0,1491.3,76.95,8580.0,4.348,91.16,True,0.0,lagrangian_gap_closed,-0.0,False,0.06,Inoserp™ MENA ; SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+MRT,Mauritania,57,4.0,13.0,187.59,12.29,1590.0,4.296,90.69,True,0.0,lagrangian_gap_closed,1.3769,False,0.05,Inoserp™ Pan-Africa ; Polyvalent Snake Antivenom  - Equine
+MWI,Malawi,29,3.0,69.0,998.75,62.13,5700.0,2.374,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Inoserp™ MENA ; SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+MYS,Malaysia,147,6.0,36.0,460.64,92.86,3330.0,3.023,98.44,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Haemato-polyvalent snake antivenom (QSMI) ; Neuro-polyvalent snake antivenom (QSMI)
+NAM,Namibia,37,3.0,4.5,43.68,25.51,510.0,5.024,76.77,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Inoserp™ MENA ; SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+NER,Niger,73,4.0,228.0,3330.06,175.44,17370.0,3.962,93.24,True,0.0,Optimal,0.5019,False,0.2,Anti-Snake Serum (Polyvalent) ; Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+NGA,Nigeria,774,14.0,1460.0,21147.05,1300.45,107580.0,2.916,99.67,True,0.0,Optimal,0.3687,False,6.1,EchiTAb-plus-ICP Liquid ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom ; Snake Venom Antiserum (Africa)
+NIC,Nicaragua,152,6.0,7.9,111.38,10.08,1170.0,1.585,100.0,True,0.0,Optimal,0.5405,False,0.23,CoRal-ICP Liquid ; PoliVal-ICP Liquid
+NLD,Netherlands (Kingdom of the),12,2.0,1.0,15.38,0.0,190.0,1.745,100.0,True,0.0,lagrangian_gap_closed,6.3863,False,0.04,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+NOR,Norway,433,10.0,1.0,15.38,0.0,400.0,1.243,100.0,True,0.0,Optimal,0.0,False,0.5,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+NPL,Nepal,77,4.0,234.0,2433.02,1164.73,13190.0,1.823,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Neuro-polyvalent snake antivenom (QSMI) ; Snake Venom Antiserum I.P. (Asia)
+OMN,Oman,61,4.0,1.0,14.9,0.47,370.0,2.41,96.52,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine
+PAK,Pakistan,151,6.0,2070.0,31530.4,295.85,147020.0,3.612,97.26,True,0.0,Optimal,0.9569,False,0.77,Hexavalent snake venom hexavalent immunoglobulin ; Polyvalent Antisnake Venom Serum
+PAN,Panama,75,4.0,14.0,199.06,16.19,1850.0,1.574,100.0,True,0.0,Optimal,3.1355,False,0.17,CoRal-ICP Liquid ; PoliVal-ICP Liquid ; Suero Anticoral Polivalente ; Suero Antiofidico Polivalente Liofilizado ; Suero Antiofidico Polivalente ; Suero Antiofídico (SAOP)
+PER,Peru,194,7.0,9.4,96.55,47.98,1480.0,4.283,81.17,True,0.0,lagrangian_gap_closed,0.0255,False,0.08,PoliVal-ICP Lyophilized ; Soro Antibotropico-crotalico ; Suero Antibotrópico Polivalente ; Suero Anticoral Polivalente ; Suero Anticrotálico Monovalente ; Suero Antilachésico Monovalente
+PHL,Philippines,87,5.0,91.0,986.43,412.69,6020.0,3.529,97.62,True,0.0,lagrangian_gap_closed,0.0,True,0.06,Monovalent (Naja philippinensis) Cobra Antivenin ; Neuro-polyvalent snake antivenom (QSMI)
+PNG,Papua New Guinea,87,5.0,69.0,1060.88,0.0,5950.0,2.76,97.7,True,0.0,Optimal,0.0389,False,0.08,Seqirus Polyvalent antivenom
+POL,Poland,375,10.0,1.0,15.38,0.0,390.0,2.117,100.0,True,0.0,Optimal,0.0671,False,0.75,Viper venom antitoxin
+PRK,Democratic People's Republic of Korea,180,7.0,6.0,78.45,13.8,940.0,1.668,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.06,Kovax Freeze-Dried Agkistrodon[Korean mamushi] Antivenom[Equine] ; Viekvin®
+PRT,Portugal,30,3.0,1.0,14.72,0.65,200.0,1.83,100.0,True,0.0,lagrangian_gap_closed,0.0301,False,0.03,Inoserp™ MENA
+PRY,Paraguay,217,7.0,6.3,90.27,6.6,1210.0,1.9,99.14,True,0.0,lagrangian_gap_closed,0.0,False,0.06,Soro Anti-botropico-laquetico ; Soro Antielapidico ; Suero Antiofidico Polivalente BIOL
+PSE,"occupied Palestinian territory, including east Jerusalem",16,2.0,1.0,14.52,0.86,270.0,0.798,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Anti-Vipers Serum (Polyvalent) ; Inoserp™ MENA ; Vipera palaestinae Antiserum (Equine source)
+QAT,Qatar,8,1.0,1.0,15.38,0.0,150.0,1.368,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Polyvalent Snake Antivenom  - Equine
+ROU,Romania,3186,20.0,1.0,12.66,2.71,490.0,1.149,100.0,False,0.009017235467446193,MILP skipped (n×m'=4964880 > 1500000); certified gap from Lagrangian bound,-0.0,True,66.97,Antiviperine sera
+RUS,Russian Federation,83,5.0,16.0,194.59,51.41,1620.0,15.276,27.24,True,0.0,lagrangian_gap_closed,0.0,False,0.06,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID ; Agkistrodon halys antivenin ; Freeze-dried Mamushi antivenom ""KMB"" ; Gamma-Vip ; Kovax Freeze-Dried Agkistrodon[Korean mamushi] Antivenom[Equine]"
+RWA,Rwanda,30,3.0,47.0,677.72,44.9,3950.0,1.189,100.0,True,0.0,lagrangian_gap_closed,2.0669,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+SAU,Saudi Arabia,20,2.0,9.8,124.79,25.89,890.0,11.485,37.4,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine
+SDN,Sudan,190,7.0,86.0,1316.38,5.87,8940.0,4.647,87.41,True,0.0,lagrangian_gap_closed,1.3005,False,0.07,Anti-Snake Serum (Polyvalent) ; Anti-Vipers Serum (Polyvalent) ; Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+SEN,Senegal,79,4.0,77.0,967.22,216.65,5520.0,2.609,100.0,True,0.0,lagrangian_gap_closed,5.613,False,0.07,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+SLE,Sierra Leone,16,2.0,90.0,1275.63,108.12,6800.0,2.233,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+SLV,El Salvador,262,8.0,1.3,19.81,0.17,540.0,0.614,100.0,True,0.0,Optimal,1.0194,False,11.84,CoRal-ICP Liquid ; PoliVal-ICP Liquid
+SOM,Somalia,118,5.0,317.0,4436.89,436.98,22590.0,4.292,93.61,True,0.0,lagrangian_gap_closed,0.0,False,0.05,Antivipmyn® Africa ; SAIMR Boomslang antivenom
+SRB,Serbia,198,7.0,1.0,15.38,0.0,330.0,1.233,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.06,Antiviperine sera ; Viekvin®
+SSD,South Sudan,79,4.0,102.0,1531.2,37.05,8990.0,4.423,91.23,True,0.0,lagrangian_gap_closed,0.0,False,0.06,Antivipmyn® Africa ; Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; SAIMR Boomslang antivenom
+STP,Sao Tome and Principe,7,1.0,1.0,15.38,0.0,150.0,0.215,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Anti Snake Venom Serum Pan Africa (10) I.H.S.
+SUR,Suriname,62,4.0,2.0,28.05,2.7,460.0,0.767,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Soro Antibotropico-crotalico ; Suero Anticoral Polivalente ; Suero Antiofidico Polivalente
+SVK,Slovakia,79,4.0,1.0,15.38,0.0,260.0,1.382,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.05,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+SVN,Slovenia,212,7.0,1.0,15.38,0.0,320.0,0.618,100.0,True,0.0,Optimal,0.0397,False,0.12,Antiviperine sera
+SWE,Sweden,21,2.0,1.0,15.38,0.0,190.0,5.87,83.25,True,0.0,lagrangian_gap_closed,0.0,False,0.04,"ANTI-VIPER (ANTI-ADDER) VENOM SERUM, HORSE, PURIFIED, CONCENTRATED, LIQUID"
+SWZ,Eswatini,4,1.0,2.3,33.75,1.61,290.0,1.358,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.03,SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+SYR,Syrian Arab Republic,62,4.0,2.1,31.07,1.22,490.0,2.424,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine ; Vipera palaestinae Antiserum (Equine source)
+TCD,Chad,126,6.0,236.0,3505.04,123.46,19430.0,3.969,94.58,True,0.0,Optimal,2.9932,False,0.43,Anti-Snake Serum (Polyvalent) ; Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ MENA ; SAIMR Boomslang antivenom
+TGO,Togo,44,3.0,70.0,1037.15,39.1,5830.0,1.877,100.0,True,0.0,Optimal,9.0239,False,0.08,Combipack of snake venom antiserum with sterile water for injection (Pan Africa) ; Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom
+THA,Thailand,928,15.0,134.0,1801.31,258.94,12830.0,1.873,100.0,True,0.0,Optimal,0.0343,True,4.13,Antivenom Tr. mucrosquamatus/stejnegeri ; Green Pit Viper Antivenin (QSMI) ; Haemato-polyvalent snake antivenom (QSMI) ; Neuro-polyvalent snake antivenom (QSMI)
+TJK,Tajikistan,59,4.0,1.0,11.05,4.33,210.0,1.557,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,SnaFab6
+TKM,Turkmenistan,60,4.0,1.0,13.56,1.82,230.0,3.96,91.05,True,0.0,lagrangian_gap_closed,0.2376,False,0.04,SnaFab6
+TLS,Timor-Leste,13,2.0,1.7,26.14,0.0,270.0,1.185,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Haemato-polyvalent snake antivenom (QSMI)
+TTO,Trinidad and Tobago,15,2.0,1.0,14.19,1.19,220.0,0.566,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.08,Soro Antielapidico ; Suero Antiofidico Polivalente
+TUN,Tunisia,263,8.0,2.2,33.7,0.12,580.0,1.424,100.0,True,0.0,Optimal,0.2115,False,1.09,Gamma-Vip ; Inoserp™ MENA
+TUR,Türki̇ye,81,4.0,3.6,53.67,1.68,690.0,5.929,72.51,True,0.0,Optimal,0.8122,False,0.32,Pentavalent snake antivenom immunoglobulin ; Polisera ; Polyvalent Snake Antivenom  - Equine ; Viper venom antitoxin ; Vipera palaestinae Antiserum (Equine source)
+TZA,United Republic of Tanzania,195,7.0,211.0,3124.37,119.76,17370.0,4.586,91.76,True,0.0,Optimal,0.8636,False,2.63,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+UGA,Uganda,147,6.0,137.0,2000.29,106.08,11850.0,2.271,100.0,True,0.0,lagrangian_gap_closed,-0.0,False,0.05,Inoserp™ Pan-Africa ; SAIMR Boomslang antivenom ; Snake Venom Antiserum (Africa)
+UKR,Ukraine,139,6.0,4.5,35.87,33.32,500.0,2.957,98.93,True,0.0,lagrangian_gap_closed,0.4213,False,0.06,Antiviperine sera
+URY,Uruguay,19,2.0,1.0,14.6,0.77,210.0,3.012,100.0,True,0.0,lagrangian_gap_closed,0.0,False,0.04,Antiveneno Tropical Trivalente ; Soro-Antibotropico
+USA,United States of America,3130,20.0,17.0,257.39,3.98,2750.0,5.778,76.83,False,0.017700045388525588,MILP skipped (n×m'=8600160 > 1500000); certified gap from Lagrangian bound,0.0,False,85.16,CroFab (Crotalidae Polyvalent Immune Fab (Ovine)) ; North American Coral Snake Antivenin (Equine)
+UZB,Uzbekistan,162,6.0,2.8,24.3,18.75,390.0,2.346,98.51,True,0.0,lagrangian_gap_closed,0.0,False,0.07,"Serum against snake venoms gyurza, efa, cobra polyvalent horse purified concentrated liquid"
+VEN,Venezuela (Bolivarian Republic of),335,9.0,48.0,687.41,50.59,5010.0,2.677,98.74,True,0.0,lagrangian_gap_closed,0.0,False,0.1,PoliVal-ICP Liquid ; Soro Anti-botropico-laquetico ; Soro Antibotropico-crotalico ; Suero Anticoral Polivalente ; Suero Antiofídico (SAOP)
+VNM,Viet Nam,3319,20.0,143.0,1796.68,401.95,14630.0,1.034,100.0,True,0.0,Optimal,2.2943,True,11.11,Antivenom B. multicinctus/N.n.naja ; Antivenom Tr. mucrosquamatus/stejnegeri ; Green Pit Viper Antivenin (QSMI) ; Haemato-polyvalent snake antivenom (QSMI) ; Huyết thanh kháng nọc rắn Hổ đất tinh chế (Refined earth tiger snake antivenom) ; Huyết thanh kháng nọc rắn Lục tre tinh chế Refined green bamboo snake antivenom). ; Monovalent Antivenin Snorkel Viper ; Neuro-polyvalent snake antivenom (QSMI)
+YEM,Yemen,333,9.0,36.0,443.16,110.34,3650.0,1.716,99.46,True,0.0,Optimal,0.9467,False,11.5,Inoserp™ MENA ; Polyvalent Snake Antivenom  - Equine
+ZAF,South Africa,52,4.0,20.0,297.85,9.65,2090.0,6.038,78.56,True,0.0,Optimal,1.5266,False,0.12,SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom
+ZMB,Zambia,109,5.0,88.0,1227.63,125.37,7460.0,4.544,91.02,True,0.0,lagrangian_gap_closed,0.0,False,0.04,SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom ; Snake Venom Antiserum (Africa)
+ZWE,Zimbabwe,70,4.0,36.0,520.78,32.72,3310.0,3.528,97.7,True,0.0,lagrangian_gap_closed,0.0,False,0.05,SAIMR Boomslang antivenom ; SAIMR Polyvalent Snake antivenom

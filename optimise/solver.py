@@ -91,7 +91,7 @@ def optimise_country(iso3: str, overrides: Optional[Dict[str, Any]] = None, *,
     w = lam_k.sum(axis=1)
     if w.sum() <= 0:
         raise ValueError(f"{iso3}: no treatable antivenom demand ({'; '.join(cd.warnings)})")
-    p = int(net["n_hubs"])
+    p = min(int(net["n_hubs"]), len(d))
     disabled = _resolve_district(cd, disabled_hub)
     T = net.get("max_resupply_hours")
     T = None if T in (None, 0, "none") else float(T)

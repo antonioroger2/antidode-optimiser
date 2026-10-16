@@ -53,6 +53,12 @@ optimise/snakebite_optimizer.db
 GLOBAL_SNAKE_ANTIVENOM_DISTRICT_OPTIMIZATION_MASTER.csv
 data/processed/GLOBAL_SNAKE_ANTIVENOM_DISTRICT_OPTIMIZATION_MASTER.csv
 
+# Large Raw Geospatial Inputs & Rasters (> 100 MB, downloaded on-the-fly)
+*.tif
+*.tiff
+data/external/worldpop/
+data/spatial/adm2/
+
 # Temporary scratch & logs
 *.log
 scratch/

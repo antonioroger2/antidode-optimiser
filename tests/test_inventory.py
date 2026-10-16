@@ -50,3 +50,34 @@ def test_rationing_is_optimal_and_within_cap():
                    for al in itertools.product(*[range(0, it["S"] + 1, 10) for it in items]) if sum(al) <= cap)
         got = sum(expected_served(it["pmf"], a) for it, a in zip(items, r["allocation"]))
         assert got == pytest.approx(best, abs=1e-9)
+
+
+def test_laminar_allocation_matches_brute_force():
+    """Hub caps nested in a national cap: greedy must equal exhaustive search."""
+    import itertools
+    v, pi = course_distribution(10, 0.3)
+    mus = [(0.6, 2.0), (4.0,)]                     # hub 0 has two products, hub 1 one
+    items = [[base_stock(m, v, pi, 0.99, 0.25) for m in hub] for hub in mus]
+    caps, V = [60, 70], 100
+    best = -1
+    grids = [range(0, it["S"] + 1, 10) for hub in items for it in hub]
+    flat = [it for hub in items for it in hub]
+    for al in itertools.product(*grids):
+        if al[0] + al[1] > caps[0] or al[2] > caps[1] or sum(al) > V:
+            continue
+        best = max(best, sum(expected_served(it["pmf"], a) for it, a in zip(flat, al)))
+    # greedy as in optimise.allocation stage B (floors = 0)
+    gains = []
+    for h, hub in enumerate(items):
+        for k, it in enumerate(hub):
+            g, pmf = it["pmf"]
+            surv = 1 - np.cumsum(pmf)
+            gains += [(g * surv[u], h, k, g) for u in range(it["S"] // g)]
+    gains.sort(key=lambda x: -x[0])
+    alloc = [[0] * len(hub) for hub in items]
+    room, budget = list(caps), V
+    for gain, h, k, g in gains:
+        if budget >= g and room[h] >= g:
+            alloc[h][k] += g; room[h] -= g; budget -= g
+    got = sum(expected_served(it["pmf"], a) for hub, ah in zip(items, alloc) for it, a in zip(hub, ah))
+    assert got == pytest.approx(best, abs=1e-9)
