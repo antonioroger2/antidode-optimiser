@@ -65,9 +65,9 @@ def _route(w, T, cap_eff, tau_vbar):
 
 def allocate(iso3: str, cfg: dict, hub_district_ids, *, hub_capacity_vials=None,
              national_supply_vials: Optional[float] = None, floor_courses: int = 1,
-             surge_factor: float = 1.0) -> Dict:
+             surge_factor: float = 1.0, cd=None, reserve_pct_national: float = 0.0) -> Dict:
     inv, crs, net = cfg["inventory"], cfg["course"], cfg["network"]
-    cd = country_demand(iso3, cfg)
+    cd = cd if cd is not None else country_demand(iso3, cfg)
     d = cd.districts
     lam = cd.product_courses.to_numpy(float) * surge_factor           # n × K
     w_all = lam.sum(axis=1)
@@ -121,6 +121,19 @@ def allocate(iso3: str, cfg: dict, hub_district_ids, *, hub_capacity_vials=None,
             if Lam[h, k] > 0:
                 targets[h, k] = items[h][k]["S"]
                 floors[h, k] = min(targets[h, k], floor_courses * vmax)
+    # National reserve rule: a pool of reserve_pct of total need, shared equally by the hubs,
+    # never above a hub's own optimal level (stock beyond that would only expire).
+    if reserve_pct_national > 0:
+        per_hub = reserve_pct_national / 100.0 * targets.sum() / H
+        g0 = int(v.min())
+        for h in range(H):
+            tot = targets[h].sum()
+            if tot <= 0:
+                continue
+            want = min(per_hub, tot)
+            for k in range(K):
+                share = int(np.floor(want * targets[h, k] / tot / g0)) * g0
+                floors[h, k] = max(floors[h, k], min(targets[h, k], share))
     alloc = floors.copy()
     floor_feasible = bool(np.all(floors.sum(1) <= cap + 1e-9) and floors.sum() <= V + 1e-9)
     if not floor_feasible:  # scale floors down to whole courses that fit (report it)
@@ -181,7 +194,8 @@ def allocate(iso3: str, cfg: dict, hub_district_ids, *, hub_capacity_vials=None,
         "parameters": {"hub_capacity_vials": None if hub_capacity_vials is None else
                        (list(map(int, cap)) if not np.isscalar(hub_capacity_vials) else hub_capacity_vials),
                        "national_supply_vials": None if not np.isfinite(V) else int(V),
-                       "floor_courses": floor_courses, "surge_factor": surge_factor,
+                       "floor_courses": floor_courses, "reserve_pct_national": reserve_pct_national,
+                       "surge_factor": surge_factor,
                        "course_vials_max": vmax, "cycle_service_level": alpha},
         "summary": {
             "vials_target_unconstrained": int(targets.sum()),
@@ -200,3 +214,49 @@ def allocate(iso3: str, cfg: dict, hub_district_ids, *, hub_capacity_vials=None,
         "rerouted_districts": split,
         "method": "capacitated routing LP (HiGHS) + laminar greedy (exact for separable concave objective)",
     }
+
+
+def n_minus_1(iso3: str, cfg: dict, hub_district_ids, designed_vials, *, capacity_pct: float = 100.0,
+              target_fill: float = 0.99, surge_factor: float = 1.0, floor_courses: int = 1,
+              max_pct: float = 300.0, tol_pct: float = 1.0, reserve_pct_national: float = 0.0) -> Dict:
+    """Single-hub-failure analysis with the other hubs kept where they are.
+
+    For every hub h: remove it, give each remaining hub capacity_pct % of its designed stock,
+    report the network fill rate, and find (bisection) the smallest uniform capacity % at
+    which the remaining hubs still reach `target_fill`.
+    """
+    cd = country_demand(iso3, cfg)
+    designed = dict(zip(hub_district_ids, designed_vials))
+
+    def fill(out, pct):
+        rem = [i for i in hub_district_ids if i != out]
+        r = allocate(iso3, cfg, rem, hub_capacity_vials=[pct / 100.0 * designed[i] for i in rem],
+                     floor_courses=floor_courses, surge_factor=surge_factor, cd=cd,
+                     reserve_pct_national=reserve_pct_national)
+        return r["summary"]["network_fill_rate"], r["summary"]["pct_courses_rerouted"]
+
+    rows = []
+    for out in hub_district_ids:
+        f_now, rer = fill(out, capacity_pct)
+        lo, hi = 0.0, max_pct
+        if fill(out, hi)[0] < target_fill:
+            need = None
+        else:
+            while hi - lo > tol_pct:
+                mid = (lo + hi) / 2
+                if fill(out, mid)[0] >= target_fill:
+                    hi = mid
+                else:
+                    lo = mid
+            need = round(hi, 1)
+        i = list(cd.districts.district_id).index(out)
+        rows.append({"failed_hub": cd.districts.adm2.iat[i], "state": cd.districts.adm1.iat[i], "district_id": out,
+                     "fill_rate_at_capacity": round(f_now, 4), "pct_courses_rerouted": rer,
+                     "capacity_pct_needed": need})
+    needs = [r["capacity_pct_needed"] for r in rows if r["capacity_pct_needed"] is not None]
+    worst = min(rows, key=lambda r: r["fill_rate_at_capacity"]) if rows else None
+    return {"target_fill": target_fill, "capacity_pct_tested": capacity_pct,
+            "required_capacity_pct": max(needs) if len(needs) == len(rows) else None,
+            "worst_case_hub": worst["failed_hub"] if worst else None,
+            "worst_case_fill_rate": worst["fill_rate_at_capacity"] if worst else None,
+            "rows": sorted(rows, key=lambda r: r["fill_rate_at_capacity"])}

@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GOAD: Global Antivenom Logistics Command Center & Operations Research Optimizer</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Leaflet GIS Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -27,7 +30,7 @@
             --bg-surface-card: rgba(19, 27, 46, 0.85);
             --border-color: #1e293b;
             --border-glow: rgba(56, 189, 248, 0.35);
-            
+
             --primary: #38bdf8;
             --primary-dark: #0284c7;
             --primary-glow: rgba(56, 189, 248, 0.25);
@@ -36,7 +39,7 @@
             --accent-amber: #f59e0b;
             --accent-purple: #a855f7;
             --accent-cyan: #06b6d4;
-            
+
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --text-dim: #64748b;
@@ -48,17 +51,29 @@
             padding: 0;
         }
 
+        html,
+        body {
+            height: 100vh;
+            height: 100dvh;
+            max-height: 100vh;
+            max-height: 100dvh;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
-        h1, h2, h3, h4, .brand-title, .kpi-num {
+        h1,
+        h2,
+        h3,
+        h4,
+        .brand-title,
+        .kpi-num {
             font-family: 'Outfit', sans-serif;
         }
 
@@ -206,24 +221,36 @@
         /* Workspace Split Layout */
         .main-workspace {
             display: flex;
-            flex: 1;
+            flex: 1 1 0;
             height: calc(100vh - 62px);
+            height: calc(100dvh - 62px);
             position: relative;
             overflow: hidden;
+            min-height: 0;
         }
 
         /* Left Control Panel */
         .control-panel {
-            width: 440px;
-            min-width: 440px;
+            width: var(--panel-w, 440px);
+            min-width: var(--panel-w, 440px);
+            max-width: var(--panel-w, 440px);
             background: var(--bg-surface);
             border-right: 1px solid var(--border-color);
-            padding: 1.25rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            padding: 1.25rem 1.25rem 6rem 1.25rem !important;
+            overflow-y: scroll !important;
+            overflow-x: hidden !important;
+            display: block !important;
             z-index: 10;
+            height: calc(100vh - 62px) !important;
+            height: calc(100dvh - 62px) !important;
+            max-height: calc(100vh - 62px) !important;
+            min-height: 0 !important;
+            box-sizing: border-box !important;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            scrollbar-gutter: stable;
+            scrollbar-width: thin;
+            scrollbar-color: #6366f1 rgba(15, 23, 42, 0.7);
         }
 
         /* Center Map Viewport */
@@ -280,7 +307,8 @@
             justify-content: space-between;
         }
 
-        .form-select, .form-input {
+        .form-select,
+        .form-input {
             width: 100%;
             padding: 0.6rem 0.75rem;
             background: var(--bg-base);
@@ -293,7 +321,8 @@
             transition: all 0.2s;
         }
 
-        .form-select:focus, .form-input:focus {
+        .form-select:focus,
+        .form-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 2px var(--primary-glow);
         }
@@ -639,8 +668,199 @@
             text-transform: uppercase;
             margin-bottom: 0.4rem;
         }
+
+        /* ---- Layout / scroll fixes ---- */
+        :root {
+            --panel-w: clamp(400px, 34vw, 560px);
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            height: 100dvh;
+        }
+
+        .navbar {
+            flex-shrink: 0;
+            gap: 1rem;
+            height: auto;
+            min-height: 62px;
+        }
+
+        .navbar-kpi-bar {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .nav-actions {
+            min-width: 0;
+        }
+
+        .nav-tabs {
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .main-workspace {
+            display: flex;
+            flex: 1 1 0;
+            height: calc(100vh - 62px) !important;
+            height: calc(100dvh - 62px) !important;
+            max-height: calc(100vh - 62px) !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            position: relative;
+        }
+
+        .control-panel {
+            display: block !important;
+            width: var(--panel-w);
+            min-width: var(--panel-w);
+            max-width: var(--panel-w);
+            height: calc(100vh - 62px) !important;
+            height: calc(100dvh - 62px) !important;
+            max-height: calc(100vh - 62px) !important;
+            min-height: 0 !important;
+            overflow-x: hidden !important;
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            scrollbar-gutter: stable;
+            padding: 1.25rem 1.25rem 6rem 1.25rem !important;
+            scrollbar-width: thin;
+            scrollbar-color: #6366f1 rgba(15, 23, 42, 0.7);
+            box-sizing: border-box;
+        }
+
+        .control-panel>* {
+            flex-shrink: 0;
+        }
+
+        .control-panel::-webkit-scrollbar {
+            width: 10px !important;
+            display: block !important;
+        }
+
+        .control-panel::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.75) !important;
+            border-radius: 4px;
+        }
+
+        .control-panel::-webkit-scrollbar-thumb {
+            background: #6366f1 !important;
+            border-radius: 6px !important;
+            border: 2px solid rgba(15, 23, 42, 0.75) !important;
+        }
+
+        .control-panel::-webkit-scrollbar-thumb:hover {
+            background: #818cf8 !important;
+        }
+
+        #optimizer-hubs-container,
+        #alloc-designed-caps,
+        #species-list-content {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .table-scroll .manifest-table {
+            min-width: 540px;
+        }
+
+        .bottom-analytics-tray {
+            left: var(--panel-w);
+        }
+
+        .tray-content {
+            height: auto;
+            max-height: min(250px, 40vh);
+        }
+
+        .node-inventory-drawer {
+            max-width: 100%;
+        }
+
+        .map-viewport {
+            overflow: hidden;
+        }
+
+        .drawer-body {
+            min-height: 0;
+            overscroll-behavior: contain;
+        }
+
+        @media (max-width: 900px) {
+
+            html,
+            body {
+                height: auto;
+            }
+
+            body {
+                height: auto;
+                min-height: 100dvh;
+                overflow-y: auto;
+            }
+
+            .navbar {
+                height: auto;
+                flex-wrap: wrap;
+                padding: 0.6rem 0.9rem;
+            }
+
+            .navbar-kpi-bar {
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .main-workspace {
+                flex-direction: column;
+                overflow: visible;
+                flex: none;
+            }
+
+            .control-panel {
+                width: 100%;
+                min-width: 0;
+                height: auto;
+                overflow: visible;
+                padding-bottom: 1.25rem;
+                border-right: 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .map-viewport {
+                flex: none;
+                height: 70vh;
+                min-height: 420px;
+            }
+
+            .bottom-analytics-tray {
+                left: 0;
+            }
+
+            .tray-content {
+                grid-template-columns: 1fr;
+            }
+
+            .node-inventory-drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Top Navigation Header -->
@@ -675,11 +895,13 @@
             </div>
             <div class="kpi-pill">
                 <span class="kpi-pill-lbl">Optimality</span>
-                <span class="kpi-pill-val" id="top-kpi-gap" style="color: var(--accent-emerald); font-size: 0.8rem;">--</span>
+                <span class="kpi-pill-val" id="top-kpi-gap"
+                    style="color: var(--accent-emerald); font-size: 0.8rem;">--</span>
             </div>
             <div class="kpi-pill">
                 <span class="kpi-pill-lbl">Scenario Mode</span>
-                <span class="kpi-pill-val" id="top-kpi-scenario" style="color: var(--accent-amber); font-size: 0.8rem;">BASELINE</span>
+                <span class="kpi-pill-val" id="top-kpi-scenario"
+                    style="color: var(--accent-amber); font-size: 0.8rem;">BASELINE</span>
             </div>
         </div>
 
@@ -710,13 +932,14 @@
     <main class="main-workspace">
 
         <!-- Left Control Panel -->
-        <aside class="control-panel" id="control-panel">
+        <aside class="control-panel" id="control-panel" style="display: block !important; overflow-y: scroll !important; overflow-x: hidden !important; height: calc(100vh - 62px) !important; max-height: calc(100vh - 62px) !important; box-sizing: border-box !important; -webkit-overflow-scrolling: touch; padding: 1.25rem 1.25rem 6rem 1.25rem !important;">
 
             <!-- TAB 1: OPERATIONS RESEARCH OPTIMIZER -->
             <div id="panel-optimizer">
                 <div class="glass-card" style="margin-bottom: 0.85rem;">
                     <div class="card-header-title">
-                        <span style="color: var(--primary);"><i class="fa-solid fa-sliders"></i> Location-Inventory Model</span>
+                        <span style="color: var(--primary);"><i class="fa-solid fa-sliders"></i> Location-Inventory
+                            Model</span>
                         <span class="danger-badge badge-combo" style="font-size: 0.65rem;">
                             <i class="fa-solid fa-certificate"></i> Exact MILP + certificate
                         </span>
@@ -735,7 +958,8 @@
                                 <span><i class="fa-solid fa-warehouse"></i> Hub Stockrooms ($p$)</span>
                                 <span class="slider-val-badge" id="val-k-hubs">8 Hubs</span>
                             </label>
-                            <input type="range" class="range-slider" id="slider-k-hubs" min="1" max="30" value="8" oninput="updateSliderVal('val-k-hubs', this.value + ' Hubs')">
+                            <input type="range" class="range-slider" id="slider-k-hubs" min="1" max="30" value="8"
+                                oninput="updateSliderVal('val-k-hubs', this.value + ' Hubs')">
                         </div>
                     </div>
 
@@ -745,13 +969,19 @@
                                 <span><i class="fa-solid fa-clock"></i> Hub → District Resupply Standard</span>
                                 <span class="slider-val-badge" id="val-golden-time">Off (pure p-median)</span>
                             </label>
-                            <input type="range" class="range-slider" id="slider-golden-time" min="0" max="24" step="1" value="0" oninput="updateSliderVal('val-golden-time', this.value == 0 ? 'Off (pure p-median)' : this.value + ' Hours')">
-                            <div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 0.25rem;">Logistics resupply time, not bite-to-treatment time. Off = minimise course-weighted time (proven optimal, fast); on = maximise courses within T first (harder; certified gap shown). KPI uses 8 h when off.</div>
+                            <input type="range" class="range-slider" id="slider-golden-time" min="0" max="24" step="1"
+                                value="0"
+                                oninput="updateSliderVal('val-golden-time', this.value == 0 ? 'Off (pure p-median)' : this.value + ' Hours')">
+                            <div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 0.25rem;">Logistics
+                                resupply time, not bite-to-treatment time. Off = minimise course-weighted time (proven
+                                optimal, fast); on = maximise courses within T first (harder; certified gap shown). KPI
+                                uses 8 h when off.</div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label"><span><i class="fa-solid fa-people-group"></i> Envenomings per death (ρ, WHO-derived)</span></label>
+                        <label class="form-label"><span><i class="fa-solid fa-people-group"></i> Envenomings per death
+                                (ρ, WHO-derived)</span></label>
                         <select class="form-select" id="optimizer-rho">
                             <option value="13">Low – 13 (1.8 M / 138 k)</option>
                             <option value="20.5" selected>Base – 20.5 (WHO midpoints)</option>
@@ -759,7 +989,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><span><i class="fa-solid fa-syringe"></i> Initial dose per course (vials, assumption)</span></label>
+                        <label class="form-label"><span><i class="fa-solid fa-syringe"></i> Initial dose per course
+                                (vials, assumption)</span></label>
                         <select class="form-select" id="optimizer-dose">
                             <option value="5">5 vials</option>
                             <option value="10" selected>10 vials</option>
@@ -769,7 +1000,8 @@
 
                     <div class="form-group">
                         <label class="form-label">
-                            <span><i class="fa-solid fa-shield-halved"></i> Cycle Service Level P(no stock-out in R+L)</span>
+                            <span><i class="fa-solid fa-shield-halved"></i> Cycle Service Level P(no stock-out in
+                                R+L)</span>
                         </label>
                         <select class="form-select" id="optimizer-service-level">
                             <option value="0.95">95.0% Service Level (Standard)</option>
@@ -788,16 +1020,20 @@
                         <span class="form-label">Quick Scenario Presets</span>
                         <div class="preset-grid">
                             <button class="preset-btn" onclick="runScenarioPreset('monsoon_surge')">
-                                <i class="fa-solid fa-cloud-showers-heavy" style="color: var(--primary);"></i> Seasonal Surge ×2.5
+                                <i class="fa-solid fa-cloud-showers-heavy" style="color: var(--primary);"></i> Seasonal
+                                Surge ×2.5
                             </button>
                             <button class="preset-btn" onclick="runScenarioPreset('hub_outage')">
-                                <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-rose);"></i> Cold-Chain Outage
+                                <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-rose);"></i>
+                                Cold-Chain Outage
                             </button>
                             <button class="preset-btn" onclick="runScenarioPreset('supply_constrained')">
-                                <i class="fa-solid fa-boxes-packing" style="color: var(--accent-amber);"></i> Supply Rationing
+                                <i class="fa-solid fa-boxes-packing" style="color: var(--accent-amber);"></i> Supply
+                                Rationing
                             </button>
                             <button class="preset-btn" onclick="runScenarioPreset('baseline')">
-                                <i class="fa-solid fa-rotate-left" style="color: var(--accent-emerald);"></i> Reset Baseline
+                                <i class="fa-solid fa-rotate-left" style="color: var(--accent-emerald);"></i> Reset
+                                Baseline
                             </button>
                         </div>
                     </div>
@@ -806,11 +1042,14 @@
                 <!-- Hub Allocation Summary List -->
                 <div id="optimizer-hub-list-card" class="glass-card" style="display: none;">
                     <div class="card-header-title">
-                        <span style="color: var(--accent-emerald);"><i class="fa-solid fa-boxes-stacked"></i> Selected Stockroom Hubs</span>
-                        <span class="score-pill" id="hubs-count-pill" style="font-size: 0.7rem; color: var(--primary);">5 Hubs</span>
+                        <span style="color: var(--accent-emerald);"><i class="fa-solid fa-boxes-stacked"></i> Selected
+                            Stockroom Hubs</span>
+                        <span class="score-pill" id="hubs-count-pill"
+                            style="font-size: 0.7rem; color: var(--primary);">5 Hubs</span>
                     </div>
                     <p style="font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.65rem;">
-                        Click on any hub below or on the map to inspect its itemized vial manifest and combination brand breakdown.
+                        Click on any hub below or on the map to inspect its itemized vial manifest and combination brand
+                        breakdown.
                     </p>
                     <div id="optimizer-hubs-container" style="max-height: 280px; overflow-y: auto;">
                         <!-- Dynamically populated -->
@@ -820,9 +1059,11 @@
                 <!-- Model certificate & provenance -->
                 <div id="optimizer-cert-card" class="glass-card" style="display: none; margin-top: 0.85rem;">
                     <div class="card-header-title">
-                        <span style="color: var(--accent-purple);"><i class="fa-solid fa-certificate"></i> Model Certificate & Provenance</span>
+                        <span style="color: var(--accent-purple);"><i class="fa-solid fa-certificate"></i> Model
+                            Certificate & Provenance</span>
                     </div>
-                    <div id="optimizer-cert-content" style="font-size: 0.72rem; line-height: 1.55; color: var(--text-muted);"></div>
+                    <div id="optimizer-cert-content"
+                        style="font-size: 0.72rem; line-height: 1.55; color: var(--text-muted);"></div>
                 </div>
             </div>
 
@@ -833,17 +1074,24 @@
                         <span><i class="fa-solid fa-warehouse"></i> Hub Capacity &amp; Stock Allocation</span>
                     </div>
                     <p style="font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.6rem; line-height: 1.45;">
-                        Hubs stay where the location model put them. Give each hub a cold-storage limit and the country a total supply;
-                        demand that does not fit is re-routed to the next-best hub, every hub keeps a minimum emergency reserve,
+                        Hubs stay where the location model put them. Give each hub a cold-storage limit and the country
+                        a total supply;
+                        demand that does not fit is re-routed to the next-best hub, every hub keeps a minimum emergency
+                        reserve,
                         and remaining vials go first to the highest-risk catchments.
                     </p>
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-lock"></i> Designed storage capacity per hub (vials) — from optimisation</label>
-                        <div id="alloc-designed-caps" style="font-size:0.7rem;line-height:1.5;background:rgba(0,0,0,0.25);border:1px solid var(--border-color);border-radius:8px;padding:0.45rem 0.6rem;max-height:150px;overflow-y:auto;color:var(--text-muted)">Run the optimiser first.</div>
+                        <label class="form-label"><i class="fa-solid fa-lock"></i> Designed storage capacity per hub
+                            (vials) — from optimisation</label>
+                        <div id="alloc-designed-caps"
+                            style="font-size:0.7rem;line-height:1.5;background:rgba(0,0,0,0.25);border:1px solid var(--border-color);border-radius:8px;padding:0.45rem 0.6rem;max-height:150px;overflow-y:auto;color:var(--text-muted)">
+                            Run the optimiser first.</div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-lock"></i> National supply (vials) — optimal need of this network</label>
-                        <input type="text" class="form-input" id="alloc-designed-supply" readonly value="—" style="opacity:0.85;cursor:not-allowed">
+                        <label class="form-label"><i class="fa-solid fa-lock"></i> National supply (vials) — optimal
+                            need of this network</label>
+                        <input type="text" class="form-input" id="alloc-designed-supply" readonly value="—"
+                            style="opacity:0.85;cursor:not-allowed">
                     </div>
                     <div class="form-group">
                         <div class="range-slider-wrapper">
@@ -851,8 +1099,11 @@
                                 <span><i class="fa-solid fa-snowflake"></i> Hub storage capacity (% of designed)</span>
                                 <span class="slider-val-badge" id="val-cap-pct">100%</span>
                             </label>
-                            <input type="range" class="range-slider" id="alloc-cap-pct" min="30" max="150" step="5" value="100" oninput="updateSliderVal('val-cap-pct', this.value + '%'); refreshDesignedCaps()">
-                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem">100 % = each hub's cold room built exactly for its optimal stock.</div>
+                            <input type="range" class="range-slider" id="alloc-cap-pct" min="30" max="150" step="5"
+                                value="100"
+                                oninput="updateSliderVal('val-cap-pct', this.value + '%'); refreshDesignedCaps()">
+                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem">100 % = each hub's
+                                cold room built exactly for its optimal stock.</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -861,18 +1112,25 @@
                                 <span><i class="fa-solid fa-boxes-packing"></i> National supply (% of need)</span>
                                 <span class="slider-val-badge" id="val-supply-pct">100%</span>
                             </label>
-                            <input type="range" class="range-slider" id="alloc-supply-pct" min="20" max="100" step="5" value="100" oninput="updateSliderVal('val-supply-pct', this.value + '%'); refreshDesignedCaps()">
-                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem" id="alloc-target-hint"></div>
+                            <input type="range" class="range-slider" id="alloc-supply-pct" min="20" max="100" step="5"
+                                value="100"
+                                oninput="updateSliderVal('val-supply-pct', this.value + '%'); refreshDesignedCaps()">
+                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem"
+                                id="alloc-target-hint"></div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="range-slider-wrapper">
                             <label class="form-label">
-                                <span><i class="fa-solid fa-shield-heart"></i> National reserve kept at hubs (% of national need)</span>
+                                <span><i class="fa-solid fa-shield-heart"></i> National reserve kept at hubs (% of
+                                    national need)</span>
                                 <span class="slider-val-badge" id="val-reserve-pct">8%</span>
                             </label>
-                            <input type="range" class="range-slider" id="alloc-reserve-pct" min="0" max="30" step="1" value="8" oninput="updateSliderVal('val-reserve-pct', this.value + '%')">
-                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem">Pool shared equally by all hubs (each also keeps ≥ 1 full course); a hub never holds more than its own optimal stock, so reserve never becomes expiring surplus.</div>
+                            <input type="range" class="range-slider" id="alloc-reserve-pct" min="0" max="30" step="1"
+                                value="8" oninput="updateSliderVal('val-reserve-pct', this.value + '%')">
+                            <div style="font-size:0.63rem;color:var(--text-dim);margin-top:0.2rem">Pool shared equally
+                                by all hubs (each also keeps ≥ 1 full course); a hub never holds more than its own
+                                optimal stock, so reserve never becomes expiring surplus.</div>
                             <input type="hidden" id="alloc-floor" value="1">
                         </div>
                     </div>
@@ -882,17 +1140,21 @@
                                 <span><i class="fa-solid fa-chart-line"></i> Demand multiplier (season)</span>
                                 <span class="slider-val-badge" id="val-surge-factor">1.0x</span>
                             </label>
-                            <input type="range" class="range-slider" id="slider-surge-factor" min="0.5" max="3.5" step="0.5" value="1.0" oninput="updateSliderVal('val-surge-factor', this.value + 'x')">
+                            <input type="range" class="range-slider" id="slider-surge-factor" min="0.5" max="3.5"
+                                step="0.5" value="1.0" oninput="updateSliderVal('val-surge-factor', this.value + 'x')">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-plug-circle-xmark"></i> Hub out of service (optional)</label>
+                        <label class="form-label"><i class="fa-solid fa-plug-circle-xmark"></i> Hub out of service
+                            (optional)</label>
                         <select class="form-select" id="scenario-outage-select">
                             <option value="">None (all hubs operational)</option>
                         </select>
                     </div>
-                    <label style="font-size:0.66rem;color:var(--text-dim);display:flex;gap:0.35rem;align-items:center;margin-bottom:0.6rem">
-                        <input type="checkbox" id="alloc-relocate"> Re-optimise hub locations when a hub is out of service (default: other hubs stay fixed)
+                    <label
+                        style="font-size:0.66rem;color:var(--text-dim);display:flex;gap:0.35rem;align-items:center;margin-bottom:0.6rem">
+                        <input type="checkbox" id="alloc-relocate"> Re-optimise hub locations when a hub is out of
+                        service (default: other hubs stay fixed)
                     </label>
                     <button class="btn-action btn-primary" onclick="runCapacityAllocation()">
                         <i class="fa-solid fa-calculator"></i> Allocate stock
@@ -919,7 +1181,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-location-crosshairs"></i> District / City</label>
+                        <label class="form-label"><i class="fa-solid fa-location-crosshairs"></i> District /
+                            City</label>
                         <select class="form-select" id="species-district-select" onchange="fetchDistrictSpecies()">
                             <option value="">Select District...</option>
                         </select>
@@ -927,7 +1190,8 @@
                 </div>
 
                 <div id="species-results-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
                         <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">
                             Species present (WHO range maps: expected occurrence, not abundance)
                         </h4>
@@ -965,7 +1229,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label"><i class="fa-solid fa-clock"></i> Hours Elapsed Since Bite</label>
-                        <input type="number" class="form-input" id="patient-hours-input" min="0.1" max="24" step="0.5" value="1.0">
+                        <input type="number" class="form-input" id="patient-hours-input" min="0.1" max="24" step="0.5"
+                            value="1.0">
                     </div>
                     <button class="btn-action btn-danger" onclick="runPatientEmergencyTriage()">
                         <i class="fa-solid fa-route"></i> Find stocked hubs
@@ -986,7 +1251,8 @@
                 <button class="layer-toggle-btn active" id="btn-toggle-heatmap" onclick="toggleMapLayer('heatmap')">
                     <i class="fa-solid fa-fire"></i> Expected Courses / yr
                 </button>
-                <button class="layer-toggle-btn active" id="btn-toggle-isochrones" onclick="toggleMapLayer('isochrones')">
+                <button class="layer-toggle-btn active" id="btn-toggle-isochrones"
+                    onclick="toggleMapLayer('isochrones')">
                     <i class="fa-solid fa-circle-notch"></i> Resupply Radius
                 </button>
                 <button class="layer-toggle-btn active" id="btn-toggle-arcs" onclick="toggleMapLayer('arcs')">
@@ -1003,7 +1269,8 @@
             <div class="node-inventory-drawer" id="node-inventory-drawer">
                 <div class="drawer-header">
                     <div>
-                        <h3 style="font-size: 1.1rem; color: #fff; font-family: 'Outfit', sans-serif;" id="drawer-hub-title">
+                        <h3 style="font-size: 1.1rem; color: #fff; font-family: 'Outfit', sans-serif;"
+                            id="drawer-hub-title">
                             Hub #1: District Name
                         </h3>
                         <span style="font-size: 0.72rem; color: var(--primary);" id="drawer-hub-subtitle">
@@ -1019,26 +1286,44 @@
                     <!-- Hub High-Level Metrics -->
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem;">
                         <div class="glass-card" style="padding: 0.75rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Total Vials to Store</span>
-                            <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary);" id="drawer-hub-vials">--</div>
+                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Total
+                                Vials to Store</span>
+                            <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary);"
+                                id="drawer-hub-vials">--</div>
                         </div>
                         <div class="glass-card" style="padding: 0.75rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Cold Storage Liters</span>
-                            <div style="font-size: 1.35rem; font-weight: 800; color: var(--accent-cyan);" id="drawer-hub-liters">-- L</div>
+                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Cold
+                                Storage Liters</span>
+                            <div style="font-size: 1.35rem; font-weight: 800; color: var(--accent-cyan);"
+                                id="drawer-hub-liters">-- L</div>
                         </div>
                         <div class="glass-card" style="padding: 0.75rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Catchment Pop. / Courses·yr⁻¹</span>
-                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-emerald);" id="drawer-hub-pop">--</div>
+                            <span
+                                style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Catchment
+                                Pop. / Courses·yr⁻¹</span>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-emerald);"
+                                id="drawer-hub-pop">--</div>
                         </div>
                         <div class="glass-card" style="padding: 0.75rem; text-align: center;">
-                            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Assigned Districts</span>
-                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-purple);" id="drawer-hub-districts">--</div>
+                            <span
+                                style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Assigned
+                                Districts</span>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-purple);"
+                                id="drawer-hub-districts">--</div>
                         </div>
+                    </div>
+                    <div id="drawer-hub-shortfall-alert"
+                        style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 6px; background: rgba(245,158,11,0.15); border: 1px solid #f59e0b; color: #b45309; font-size: 0.75rem; font-weight: 700; align-items: center; justify-content: space-between;">
+                        <span><i class="fa-solid fa-cart-shopping"></i> Shortfall: Additional Vials to Order to reach
+                            99% Service Level:</span>
+                        <span id="drawer-hub-deficit-val"
+                            style="font-size: 0.85rem; color: #b45309; font-weight: 800;">--</span>
                     </div>
 
                     <!-- Multi-Brand Combination Inventory Table -->
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <div style="margin-top: 0.85rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <h4 style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase;">
                                 <i class="fa-solid fa-prescription-bottle-medical"></i> Itemized Antivenom Inventory
                             </h4>
@@ -1046,16 +1331,17 @@
                                 (R,S) compound-Poisson, exact
                             </span>
                         </div>
-                        <div style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: var(--bg-surface);">
+                        <div
+                            style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: var(--bg-surface);">
                             <table class="manifest-table" id="drawer-manifest-table">
                                 <thead>
                                     <tr>
                                         <th>Product (WHO catalogue)</th>
                                         <th>Courses/yr</th>
-                                        <th>Mean R+L</th>
-                                        <th>Safety</th>
+                                        <th>Target Need</th>
+                                        <th style="color: var(--primary);">Allocated</th>
+                                        <th style="color: var(--accent-amber);">To Order</th>
                                         <th>Fill rate</th>
-                                        <th style="color: var(--primary);">Order-up-to S</th>
                                     </tr>
                                 </thead>
                                 <tbody id="drawer-manifest-tbody">
@@ -1067,10 +1353,12 @@
 
                     <!-- Catchment Assigned Districts Table -->
                     <div>
-                        <h4 style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
+                        <h4
+                            style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
                             <i class="fa-solid fa-map-pin"></i> Catchment Districts & Resupply Time
                         </h4>
-                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-surface); padding: 0.5rem;">
+                        <div
+                            style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-surface); padding: 0.5rem;">
                             <div id="drawer-catchment-list" style="font-size: 0.75rem;">
                                 <!-- Dynamic rows -->
                             </div>
@@ -1084,7 +1372,8 @@
                 <div class="tray-handle" onclick="toggleAnalyticsTray()">
                     <div style="display: flex; align-items: center; gap: 0.65rem;">
                         <i class="fa-solid fa-chart-simple" style="color: var(--primary);"></i>
-                        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                        <span
+                            style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
                             Operations Research Analytics & Visual Diagnostics
                         </span>
                     </div>
@@ -1096,7 +1385,8 @@
                 <div class="tray-content">
                     <!-- Chart 1: Hub Vial Allocation Bar Chart -->
                     <div class="chart-box">
-                        <span class="chart-title"><i class="fa-solid fa-chart-column"></i> Vial Stock Allocation by Hub</span>
+                        <span class="chart-title"><i class="fa-solid fa-chart-column"></i> Vial Stock Allocation by
+                            Hub</span>
                         <div style="flex: 1; position: relative;">
                             <canvas id="chart-hub-vials"></canvas>
                         </div>
@@ -1104,7 +1394,8 @@
 
                     <!-- Chart 2: Product Formulation Donut Chart -->
                     <div class="chart-box">
-                        <span class="chart-title"><i class="fa-solid fa-chart-pie"></i> Formulation Mix & Combinations</span>
+                        <span class="chart-title"><i class="fa-solid fa-chart-pie"></i> Formulation Mix &
+                            Combinations</span>
                         <div style="flex: 1; position: relative;">
                             <canvas id="chart-product-mix"></canvas>
                         </div>
@@ -1204,6 +1495,7 @@
 
         // Tab Switching
         function switchTab(tabId) {
+            const cp = document.getElementById('control-panel'); if (cp) cp.scrollTop = 0;
             document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${tabId}-btn`).classList.add('active');
 
@@ -1256,7 +1548,7 @@
             try {
                 const res = await fetch('/api/countries');
                 const countries = await res.json();
-                
+
                 const selects = [
                     document.getElementById('optimizer-country-select'),
                     document.getElementById('species-country-select'),
@@ -1332,7 +1624,7 @@
             document.getElementById('top-kpi-eta').textContent = `${(data.mean_resupply_hours_per_course).toFixed(2)} h`;
             const opt = data.optimality || {};
             const gapEl = document.getElementById('top-kpi-gap');
-            gapEl.textContent = opt.proven_optimal ? 'PROVEN OPTIMAL' : (opt.gap == null ? 'heuristic' : `gap ${(100*opt.gap).toFixed(3)}%`);
+            gapEl.textContent = opt.proven_optimal ? 'PROVEN OPTIMAL' : (opt.gap == null ? 'heuristic' : `gap ${(100 * opt.gap).toFixed(3)}%`);
             gapEl.style.color = opt.proven_optimal ? 'var(--accent-emerald)' : 'var(--accent-amber)';
             renderCertificate(data);
             if (data.scenario !== 'capacity_allocation' && !data.allocation) { designedNetwork = data; refreshDesignedCaps(); }
@@ -1370,86 +1662,152 @@
 
             // Populate Outage Select for Scenario Tab
             const outageSelect = document.getElementById('scenario-outage-select');
+            const prevOutageVal = outageSelect.value;
             outageSelect.innerHTML = '<option value="">None (All Hubs Operational)</option>';
 
+            // Combine active hubs and offline hubs for rendering
+            const hubsToRender = [...(data.selected_stockroom_hubs || [])];
+            const offHubs = data.offline_hubs || (data.failed_hub ? [data.failed_hub] : []);
+            offHubs.forEach(oh => {
+                if (!hubsToRender.some(h => h.hub_id === oh.hub_id)) hubsToRender.push(oh);
+            });
+            hubsToRender.sort((a, b) => a.hub_id - b.hub_id);
+
             // Render Hub Stockroom Markers & Isochrones
-            data.selected_stockroom_hubs.forEach(hub => {
+            hubsToRender.forEach(hub => {
                 bounds.push([hub.lat, hub.lon]);
-                outageSelect.add(new Option(`Hub #${hub.hub_id}: ${hub.district_name} (${hub.state_name})`, hub.district_id));
+                const isOffline = !!hub.is_offline;
+                outageSelect.add(new Option(`Hub #${hub.hub_id}: ${hub.district_name} (${hub.state_name})${isOffline ? ' [OFFLINE]' : ''}`, hub.district_id));
 
-                // Resupply radius: great-circle km reachable within the standard (speed / circuity)
-                const P = data.parameters || {};
-                const Tstd = data.resupply_standard_hours || 0;
-                const rKm = Tstd > 0 ? Tstd * P.avg_speed_kmh / P.circuity : 0;
-                if (rKm > 0) L.circle([hub.lat, hub.lon], {
-                    radius: rKm * 1000,
-                    color: '#10b981',
-                    fillColor: '#10b981',
-                    fillOpacity: 0.05,
-                    weight: 1.5,
-                    dashArray: '5, 5'
-                }).addTo(isochronesLayer);
+                if (!isOffline) {
+                    // Resupply radius: great-circle km reachable within the standard (speed / circuity)
+                    const P = data.parameters || {};
+                    const Tstd = data.resupply_standard_hours || 0;
+                    const rKm = Tstd > 0 ? Tstd * P.avg_speed_kmh / P.circuity : 0;
+                    if (rKm > 0) L.circle([hub.lat, hub.lon], {
+                        radius: rKm * 1000,
+                        color: '#10b981',
+                        fillColor: '#10b981',
+                        fillOpacity: 0.05,
+                        weight: 1.5,
+                        dashArray: '5, 5'
+                    }).addTo(isochronesLayer);
 
-                if (rKm > 0) L.circle([hub.lat, hub.lon], {
-                    radius: rKm * 500,
-                    color: '#38bdf8',
-                    fillColor: '#38bdf8',
-                    fillOpacity: 0.08,
-                    weight: 1,
-                    dashArray: '3, 3'
-                }).addTo(isochronesLayer);
+                    if (rKm > 0) L.circle([hub.lat, hub.lon], {
+                        radius: rKm * 500,
+                        color: '#38bdf8',
+                        fillColor: '#38bdf8',
+                        fillOpacity: 0.08,
+                        weight: 1,
+                        dashArray: '3, 3'
+                    }).addTo(isochronesLayer);
+                }
 
                 // Hub Marker
                 const hubIcon = L.divIcon({
-                    className: 'custom-hub-icon',
-                    html: `
+                    className: isOffline ? 'custom-hub-icon-offline' : 'custom-hub-icon',
+                    html: isOffline ? `
+                        <div style="background: linear-gradient(135deg, #ef4444, #b91c1c); width: 30px; height: 30px; border-radius: 50%; border: 3px solid #fecaca; box-shadow: 0 0 18px rgba(239,68,68,0.9); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 13px; font-family: 'Outfit', sans-serif;">
+                            ✕
+                        </div>
+                    ` : `
                         <div style="background: linear-gradient(135deg, #0ea5e9, #2563eb); width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 16px #38bdf8; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 11px; font-family: 'Outfit', sans-serif;">
                             ${hub.hub_id}
                         </div>
                     `,
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
+                    iconSize: isOffline ? [30, 30] : [28, 28],
+                    iconAnchor: isOffline ? [15, 15] : [14, 14]
                 });
 
                 const m = L.marker([hub.lat, hub.lon], { icon: hubIcon }).addTo(hubsLayer);
-                m.bindPopup(`
-                    <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width: 180px; color: #0f172a;">
-                        <div style="font-weight: 800; font-size: 13px; color: #0284c7;">HUB #${hub.hub_id}: ${hub.district_name}</div>
-                        <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">${hub.state_name}</div>
-                        <div style="font-size: 11px;">Allocated Vials: <b style="color: #0284c7;">${hub.total_vials_to_store.toLocaleString()}</b></div>
-                        <div style="font-size: 11px;">Cold Storage: <b>${hub.total_refrigeration_liters} Liters</b></div>
-                        <div style="font-size: 11px;">Catchment Pop: <b>${hub.assigned_population.toLocaleString()}</b></div>
-                        <div style="font-size: 11px;">Expected courses/yr: <b>${hub.annual_courses_served.toLocaleString()}</b></div>
-                        <div style="font-size: 11px;">Districts: <b>${hub.assigned_districts_count}</b></div>
-                        <button onclick="openNodeInventoryDrawer(${hub.hub_id})" style="margin-top: 8px; width: 100%; background: #0284c7; color: white; border: none; padding: 5px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; cursor: pointer;">
-                            📦 Open Itemized Manifest
-                        </button>
-                    </div>
-                `);
+                if (isOffline) {
+                    const transfersHtml = hub.catchment_transfers ? Object.entries(hub.catchment_transfers).map(([hName, count]) =>
+                        `<div style="display:flex;justify-content:space-between;font-size:11px;color:#334155;margin-bottom:2px;"><span>→ <b>${hName}</b>:</span><span style="font-weight:700;color:#0284c7;">+${count} districts</span></div>`
+                    ).join('') : '<div style="font-size:11px;color:#64748b;">No transfers</div>';
+                    const base = hub.baseline_stats || {};
+                    m.bindPopup(`
+                        <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width: 220px; color: #0f172a;">
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                                <span style="background:#fee2e2;color:#b91c1c;font-weight:800;font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid #fca5a5;">OFFLINE / OUT OF SERVICE</span>
+                            </div>
+                            <div style="font-weight: 800; font-size: 14px; color: #dc2626;">HUB #${hub.hub_id}: ${hub.district_name}</div>
+                            <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">${hub.state_name}</div>
+                            <div style="padding:6px;background:#fef2f2;border-radius:6px;border:1px solid #fee2e2;margin-bottom:6px;font-size:11px;">
+                                <div>Allocated Vials: <b style="color: #dc2626;">0 vials</b> <span style="color:#64748b;font-size:10px;">(baseline: ${(base.allocated_vials || 0).toLocaleString()})</span></div>
+                                <div>Cold Storage: <b>0 Liters</b></div>
+                                <div>Catchment Dist: <b>0</b> <span style="color:#64748b;font-size:10px;">(baseline: ${base.districts_count || 0})</span></div>
+                            </div>
+                            <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:3px;">
+                                Catchment Transferred to Nearest Hubs:
+                            </div>
+                            ${transfersHtml}
+                            <button onclick="openNodeInventoryDrawer(${hub.hub_id})" style="margin-top: 8px; width: 100%; background: #dc2626; color: white; border: none; padding: 5px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; cursor: pointer;">
+                                ✕ View Outage Details
+                            </button>
+                        </div>
+                    `);
+                } else {
+                    const absorbedBadge = hub.absorbed_from_outage_districts ? `
+                        <div style="margin:4px 0 6px 0;padding:3px 6px;background:#eff6ff;color:#1d4ed8;border-radius:4px;font-size:10px;font-weight:700;border:1px solid #bfdbfe;">
+                            ⚡ Absorbed +${hub.absorbed_from_outage_districts} districts from offline hub
+                        </div>
+                    ` : '';
+                    m.bindPopup(`
+                        <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width: 180px; color: #0f172a;">
+                            <div style="font-weight: 800; font-size: 13px; color: #0284c7;">HUB #${hub.hub_id}: ${hub.district_name}</div>
+                            <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">${hub.state_name}</div>
+                            ${absorbedBadge}
+                            <div style="font-size: 11px;">Allocated Vials: <b style="color: #0284c7;">${hub.total_vials_to_store.toLocaleString()}</b></div>
+                            <div style="font-size: 11px;">Cold Storage: <b>${hub.total_refrigeration_liters} Liters</b></div>
+                            <div style="font-size: 11px;">Catchment Pop: <b>${hub.assigned_population.toLocaleString()}</b></div>
+                            <div style="font-size: 11px;">Expected courses/yr: <b>${hub.annual_courses_served.toLocaleString()}</b></div>
+                            <div style="font-size: 11px;">Districts: <b>${hub.assigned_districts_count}</b></div>
+                            <button onclick="openNodeInventoryDrawer(${hub.hub_id})" style="margin-top: 8px; width: 100%; background: #0284c7; color: white; border: none; padding: 5px 8px; border-radius: 5px; font-weight: 700; font-size: 11px; cursor: pointer;">
+                                📦 Open Itemized Manifest
+                            </button>
+                        </div>
+                    `);
+                }
 
                 m.on('click', () => openNodeInventoryDrawer(hub.hub_id));
             });
 
+            if (prevOutageVal && [...outageSelect.options].some(o => o.value === prevOutageVal)) {
+                outageSelect.value = prevOutageVal;
+            }
+
             // Render Assigned Districts & Directed Dispatch Arcs
             data.district_assignments.forEach(d => {
                 const hub = data.selected_stockroom_hubs.find(h => h.hub_id === d.assigned_hub_id);
-                if (hub) {
-                    const arcColor = (d.within_resupply_standard !== false) ? '#38bdf8' : '#f43f5e';
+                const isRerouted = !!d.rerouted_from_outage;
+                if (hub && !hub.is_offline) {
+                    let arcColor = (d.within_resupply_standard !== false) ? '#38bdf8' : '#f43f5e';
+                    let arcWeight = 1.2;
+                    let arcOpacity = (d.within_resupply_standard !== false) ? 0.35 : 0.85;
+                    let arcDash = (d.within_resupply_standard !== false) ? '4, 4' : '2, 4';
+
+                    if (isRerouted) {
+                        arcColor = '#f59e0b'; // Amber glow for absorbed outage load
+                        arcWeight = 1.9;
+                        arcOpacity = 0.9;
+                        arcDash = '6, 4';
+                    }
+
                     L.polyline([[d.lat, d.lon], [hub.lat, hub.lon]], {
                         color: arcColor,
-                        weight: 1.2,
-                        opacity: (d.within_resupply_standard !== false) ? 0.35 : 0.85,
-                        dashArray: (d.within_resupply_standard !== false) ? '4, 4' : '2, 4'
+                        weight: arcWeight,
+                        opacity: arcOpacity,
+                        dashArray: arcDash
                     }).addTo(arcsLayer);
                 }
 
                 // District Node Marker
                 const dMarker = L.circleMarker([d.lat, d.lon], {
-                    radius: 3.5,
-                    color: (d.within_resupply_standard !== false) ? '#38bdf8' : '#f43f5e',
-                    fillColor: (d.within_resupply_standard !== false) ? '#0284c7' : '#e11d48',
-                    fillOpacity: 0.6,
-                    weight: 1
+                    radius: isRerouted ? 4.5 : 3.5,
+                    color: isRerouted ? '#f59e0b' : ((d.within_resupply_standard !== false) ? '#38bdf8' : '#f43f5e'),
+                    fillColor: isRerouted ? '#d97706' : ((d.within_resupply_standard !== false) ? '#0284c7' : '#e11d48'),
+                    fillOpacity: isRerouted ? 0.9 : 0.6,
+                    weight: isRerouted ? 1.5 : 1
                 }).addTo(districtsLayer);
 
                 // Build Product Sourcing HTML
@@ -1468,6 +1826,12 @@
                     </div>
                 `).join('');
 
+                const rerouteBanner = isRerouted ? `
+                    <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;border-radius:4px;padding:4px 6px;margin-bottom:6px;font-size:11px;color:#b45309;font-weight:700;">
+                        ⚡ Re-routed from offline hub: <s>${d.former_hub}</s> → <span style="color:#0284c7;">${d.assigned_hub}</span> (+${d.distance_km} km)
+                    </div>
+                ` : '';
+
                 dMarker.bindPopup(`
                     <div style="font-family:'Plus Jakarta Sans',sans-serif; color: #0f172a; min-width: 240px; max-width: 320px;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
@@ -1481,6 +1845,8 @@
                                 ${(d.within_resupply_standard !== false) ? 'WITHIN STANDARD' : 'BEYOND STANDARD'}
                             </span>
                         </div>
+
+                        ${rerouteBanner}
 
                         <div style="font-size: 11px; margin-top: 4px; color: #334155;">
                             <div>Primary Hub: <b style="color: #0284c7;">${d.assigned_hub}</b> (${d.distance_km} km • ${d.travel_time_min} min)</div>
@@ -1521,16 +1887,29 @@
             const hubListContainer = document.getElementById('optimizer-hubs-container');
             hubListContainer.innerHTML = '';
             document.getElementById('optimizer-hub-list-card').style.display = 'block';
-            document.getElementById('hubs-count-pill').textContent = `${data.selected_stockroom_hubs.length} Hubs`;
+            document.getElementById('hubs-count-pill').textContent = `${data.selected_stockroom_hubs.length} Hubs${offHubs.length ? ` (${offHubs.length} Offline)` : ''}`;
 
-            data.selected_stockroom_hubs.forEach(h => {
+            hubsToRender.forEach(h => {
                 const item = document.createElement('div');
+                const isOff = !!h.is_offline;
                 item.className = 'hub-summary-item';
+                if (isOff) {
+                    item.style.borderLeft = '3px solid #ef4444';
+                    item.style.background = 'rgba(239, 68, 68, 0.08)';
+                } else if (h.absorbed_from_outage_districts) {
+                    item.style.borderLeft = '3px solid #f59e0b';
+                    item.style.background = 'rgba(245, 158, 11, 0.06)';
+                }
                 item.onclick = () => openNodeInventoryDrawer(h.hub_id);
+
+                const badgeHtml = isOff ?
+                    `<span style="font-size:0.6rem;font-weight:800;background:rgba(239,68,68,0.2);color:#ef4444;padding:1px 5px;border-radius:4px;border:1px solid rgba(239,68,68,0.4);">OFFLINE</span>` :
+                    (h.absorbed_from_outage_districts ? `<span style="font-size:0.6rem;font-weight:700;background:rgba(245,158,11,0.18);color:#d97706;padding:1px 5px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);">+${h.absorbed_from_outage_districts} absorbed</span>` : '');
+
                 item.innerHTML = `
                     <div class="hub-summary-header">
-                        <span class="hub-name">#${h.hub_id}: ${h.district_name}</span>
-                        <span style="font-size: 0.78rem; font-weight: 800; color: var(--primary);">
+                        <span class="hub-name">${isOff ? '<s>' : ''}#${h.hub_id}: ${h.district_name}${isOff ? '</s>' : ''} ${badgeHtml}</span>
+                        <span style="font-size: 0.78rem; font-weight: 800; color: ${isOff ? 'var(--accent-rose)' : 'var(--primary)'};">
                             ${h.total_vials_to_store.toLocaleString()} vials
                         </span>
                     </div>
@@ -1551,35 +1930,79 @@
         // Open Node Inventory Manifest Drawer
         function openNodeInventoryDrawer(hubId) {
             if (!currentSolutionData) return;
-            const hub = currentSolutionData.selected_stockroom_hubs.find(h => h.hub_id === hubId);
+            const allH = [...(currentSolutionData.selected_stockroom_hubs || []), ...(currentSolutionData.offline_hubs || (currentSolutionData.failed_hub ? [currentSolutionData.failed_hub] : []))];
+            const hub = allH.find(h => h.hub_id === hubId);
             if (!hub) return;
 
-            document.getElementById('drawer-hub-title').textContent = `Hub #${hub.hub_id}: ${hub.district_name}`;
-            document.getElementById('drawer-hub-subtitle').textContent = `${hub.state_name} • resupply hub`;
+            const isOffline = !!hub.is_offline;
+            document.getElementById('drawer-hub-title').textContent = `${isOffline ? '[OFFLINE] ' : ''}Hub #${hub.hub_id}: ${hub.district_name}`;
+            document.getElementById('drawer-hub-subtitle').textContent = isOffline ?
+                `OFFLINE / OUT OF SERVICE • 0 vials allocated` :
+                `${hub.state_name} • resupply hub${hub.absorbed_from_outage_districts ? ` • absorbed +${hub.absorbed_from_outage_districts} districts` : ''}`;
             document.getElementById('drawer-hub-vials').textContent = hub.total_vials_to_store.toLocaleString();
             document.getElementById('drawer-hub-liters').textContent = `${hub.total_refrigeration_liters} L`;
             document.getElementById('drawer-hub-pop').textContent = `${hub.assigned_population.toLocaleString()} / ${Math.round(hub.annual_courses_served).toLocaleString()}`;
             document.getElementById('drawer-hub-districts').textContent = `${hub.assigned_districts_count} Districts`;
 
+            // Calculate Shortfall / Deficit to Order
+            let hubTarget = 0, hubAlloc = 0;
+            if (hub.vial_inventory && hub.vial_inventory.length > 0) {
+                hub.vial_inventory.forEach(inv => {
+                    const t = inv.order_up_to_target || inv.total_vials_allocated || 0;
+                    const a = inv.total_vials_allocated || 0;
+                    hubTarget += t;
+                    hubAlloc += a;
+                });
+            } else if (hub.target_vials) {
+                hubTarget = hub.target_vials;
+                hubAlloc = hub.total_vials_to_store || 0;
+            }
+            const hubDeficit = Math.max(0, hubTarget - hubAlloc);
+            const deficitBox = document.getElementById('drawer-hub-shortfall-alert');
+            if (deficitBox) {
+                if (!isOffline && hubDeficit > 0) {
+                    deficitBox.style.display = 'flex';
+                    document.getElementById('drawer-hub-deficit-val').textContent = `+${hubDeficit.toLocaleString()} vials (${(100 * hubDeficit / Math.max(1, hubTarget)).toFixed(1)}% short)`;
+                } else {
+                    deficitBox.style.display = 'none';
+                }
+            }
+
             // Render Itemized Multi-Brand Table
             const tbody = document.getElementById('drawer-manifest-tbody');
             tbody.innerHTML = '';
 
-            hub.vial_inventory.forEach(inv => {
+            if (isOffline) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <div style="font-weight: 700; color: #fff;">${inv.brand_name}</div>
-                        <div style="font-size: 0.65rem; color: var(--text-dim);">${inv.manufacturer || ''} · covers ${inv.target_species_count} species</div>
-                    </td>
-                    <td>${inv.annual_courses.toLocaleString()}</td>
-                    <td>${inv.cycle_demand.toLocaleString()}</td>
-                    <td>${inv.safety_stock_buffer.toLocaleString()}</td>
-                    <td>${(100 * inv.fill_rate).toFixed(2)}%</td>
-                    <td style="font-weight: 800; color: var(--primary);">${inv.total_vials_allocated.toLocaleString()}</td>
-                `;
+                tr.innerHTML = `<td colspan="6" style="text-align:center;padding:1.5rem;color:var(--accent-rose);font-weight:700;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:1.2rem;margin-bottom:0.5rem;display:block;"></i>
+                    This hub is OFFLINE. 0 vials allocated. All catchment districts were automatically transferred to nearest operational hubs.
+                </td>`;
                 tbody.appendChild(tr);
-            });
+            } else {
+                hub.vial_inventory.forEach(inv => {
+                    const targetS = inv.order_up_to_target || inv.total_vials_allocated;
+                    const allocS = inv.total_vials_allocated;
+                    const itemDeficit = Math.max(0, targetS - allocS);
+                    const toOrderBadge = itemDeficit > 0 ?
+                        `<span style="color:var(--accent-amber);font-weight:800;">+${itemDeficit.toLocaleString()}</span>` :
+                        `<span style="color:var(--accent-emerald);font-size:0.68rem;font-weight:600;">✓ Full</span>`;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <div style="font-weight: 700; color: #fff;">${inv.brand_name}</div>
+                            <div style="font-size: 0.65rem; color: var(--text-dim);">${inv.manufacturer || ''} · covers ${inv.target_species_count} species</div>
+                        </td>
+                        <td>${inv.annual_courses.toLocaleString()}</td>
+                        <td>${targetS.toLocaleString()}</td>
+                        <td style="font-weight: 800; color: var(--primary);">${allocS.toLocaleString()}</td>
+                        <td>${toOrderBadge}</td>
+                        <td style="color:${inv.fill_rate < 0.95 ? 'var(--accent-rose)' : 'var(--accent-emerald)'};font-weight:700;">${(100 * inv.fill_rate).toFixed(1)}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
 
             // Render Catchment Districts List
             const catchmentList = document.getElementById('drawer-catchment-list');
@@ -1604,11 +2027,13 @@
                     closeNodeInventoryDrawer();
                     openDistrictHazardProfile(d.district_id);
                 };
+                const rerouteTag = d.rerouted_from_outage ?
+                    `<span style="font-size:0.62rem;color:#b45309;background:#fef3c7;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;">⚡ Re-routed from ${d.former_hub}</span>` : '';
                 row.innerHTML = `
                     <div>
                         <div style="font-weight: 700; color: #fff; font-size: 0.8rem;">
                             <i class="fa-solid fa-location-dot" style="color: var(--primary); font-size: 0.75rem; margin-right: 4px;"></i>
-                            ${d.district}
+                            ${d.district} ${rerouteTag}
                         </div>
                         <div style="font-size: 0.7rem; color: var(--text-muted);">${d.state} • Courses/yr: <span style="color: #f59e0b; font-weight: 600;">${d.annual_courses}</span></div>
                     </div>
@@ -1765,7 +2190,8 @@
                 runCapacityAllocation();
             } else {
                 [['alloc-cap-pct', 'val-cap-pct'], ['alloc-supply-pct', 'val-supply-pct']].forEach(([i, l]) => {
-                    document.getElementById(i).value = 100; updateSliderVal(l, '100%'); });
+                    document.getElementById(i).value = 100; updateSliderVal(l, '100%');
+                });
                 document.getElementById('scenario-outage-select').selectedIndex = 0;
                 executeStockroomOptimization({ scenario: 'baseline', surge_factor: 1.0 });
             }
@@ -1809,73 +2235,138 @@
             }
             const A = data.allocation, S = A.summary;
             const pct = x => x == null ? '—' : `${x}%`;
-            const rows = A.hubs.map(h => `
+            const rows = A.hubs.map(h => {
+                const deficit = Math.max(0, h.target_vials - h.allocated_vials);
+                const orderBadge = deficit > 0 ?
+                    `<span style="color:var(--accent-amber);font-weight:800;">+${deficit.toLocaleString()}</span>` :
+                    `<span style="color:var(--accent-emerald);font-size:0.65rem;font-weight:600;">✓ Full</span>`;
+                return `
                 <tr>
                     <td><b>#${h.hub_id} ${h.district_name}</b><div style="font-size:0.62rem;color:var(--text-dim)">${h.state_name}</div></td>
                     <td>${h.target_vials.toLocaleString()}</td>
                     <td style="color:var(--primary);font-weight:800">${h.allocated_vials.toLocaleString()}</td>
+                    <td>${orderBadge}</td>
                     <td>${h.capacity_vials == null ? '∞' : pct(h.utilisation_pct)}</td>
-                    <td style="color:${h.fill_rate < 0.9 ? 'var(--accent-rose)' : 'var(--accent-emerald)'}">${(100 * h.fill_rate).toFixed(1)}%</td>
+                    <td style="color:${h.fill_rate < 0.9 ? 'var(--accent-rose)' : 'var(--accent-emerald)'};font-weight:700;">${(100 * h.fill_rate).toFixed(1)}%</td>
                     <td>${h.nearest_demand_kept_pct == null ? '—' : pct(h.nearest_demand_kept_pct)}</td>
-                </tr>`).join('');
+                </tr>`;
+            }).join('');
             const rr = (A.rerouted_districts || []).slice(0, 12).map(r =>
                 `<div>${r.district} (${r.state}): ${Object.entries(r.served_by).map(([k, v]) => `${k} ${(100 * v).toFixed(0)}%`).join(', ')}</div>`).join('');
+            let outageAlert = '';
+            if (!data.failed_hub && keepOutage) {
+                outageAlert = `
+                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:0.6rem;margin-bottom:0.65rem;">
+                        <div style="color:var(--accent-rose);font-weight:800;font-size:0.75rem;margin-bottom:0.25rem;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> ${keepOutage.split('|').pop()} HUB IS OFFLINE
+                        </div>
+                        <div style="font-size:0.68rem;color:var(--text-muted);line-height:1.4;">
+                            Its districts were re-routed to the nearest surviving hubs, which absorb them only within their own capacity; overflow shows as lower fill rate and vials to order.
+                        </div>
+                    </div>`;
+            }
+            if (data.failed_hub) {
+                const fh = data.failed_hub;
+                const trText = Object.entries(data.catchment_transfers || {}).map(([h, c]) => `<b>${h}</b> (+${c})`).join(', ');
+                outageAlert = `
+                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:0.6rem;margin-bottom:0.65rem;">
+                        <div style="color:var(--accent-rose);font-weight:800;font-size:0.75rem;margin-bottom:0.25rem;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> HUB #${fh.hub_id} (${fh.district_name}) IS OFFLINE
+                        </div>
+                        <div style="font-size:0.68rem;color:var(--text-muted);line-height:1.4;">
+                            All ${fh.baseline_stats.districts_count} catchment districts automatically re-routed to nearest surviving hubs: ${trText}. Surviving hubs absorb it only within their own capacity; any overflow shows as lower fill rate and vials to order.
+                        </div>
+                    </div>
+                `;
+            }
+            const natShortfall = Math.max(0, S.vials_target_unconstrained - S.vials_allocated);
+            const shortfallCard = natShortfall > 0 ?
+                `<div class="glass-card" style="padding:0.5rem;text-align:center;border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);"><div style="font-size:0.62rem;color:var(--accent-amber);font-weight:700;">To Order (Shortfall)</div><b style="color:var(--accent-amber);font-size:0.95rem;">+${natShortfall.toLocaleString()} vials</b></div>` :
+                `<div class="glass-card" style="padding:0.5rem;text-align:center;"><div style="font-size:0.62rem;color:var(--text-dim)">Supply status</div><b style="color:var(--accent-emerald);font-size:0.95rem;">✓ 100% Covered</b></div>`;
+
             box.innerHTML = `
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-bottom:0.6rem">
+                ${outageAlert}
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:0.45rem;margin-bottom:0.6rem">
                     <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Vials allocated / needed</div><b>${S.vials_allocated.toLocaleString()} / ${S.vials_target_unconstrained.toLocaleString()}</b></div>
+                    ${shortfallCard}
                     <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Network fill rate</div><b style="color:${S.network_fill_rate < 0.9 ? 'var(--accent-rose)' : 'var(--accent-emerald)'}">${(100 * S.network_fill_rate).toFixed(1)}%</b></div>
-                    <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Courses re-routed (capacity)</div><b>${S.pct_courses_rerouted}%</b></div>
+                    <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Courses re-routed (cap)</div><b>${S.pct_courses_rerouted}%</b></div>
                     <div class="glass-card" style="padding:0.5rem;text-align:center"><div style="font-size:0.62rem;color:var(--text-dim)">Hubs at capacity</div><b>${S.hubs_at_capacity} / ${A.hubs.length}</b></div>
                 </div>
                 ${S.floors_feasible ? '' : '<div style="color:var(--accent-rose);margin-bottom:0.4rem">⚠ Capacity or supply is below the minimum reserve at some hubs – reserves were reduced.</div>'}
                 ${S.network_overloaded ? '<div style="color:var(--accent-amber);margin-bottom:0.4rem">Total hub storage is below average demand: every hub runs at capacity and the shortage appears as lower fill rates.</div>' : ''}
                 ${S.courses_unrouted_per_year > 0 ? `<div style="color:var(--accent-rose)">⚠ ${S.courses_unrouted_per_year} courses/yr cannot be routed to any hub (total capacity too small).</div>` : ''}
-                <table class="manifest-table" style="width:100%;font-size:0.68rem">
-                    <thead><tr><th>Hub</th><th>Needed</th><th>Allocated</th><th>Storage used</th><th>Fill rate</th><th>Own demand kept</th></tr></thead>
+                <div class="table-scroll"><table class="manifest-table" style="width:100%;font-size:0.68rem">
+                    <thead><tr><th>Hub</th><th>Needed</th><th>Allocated</th><th style="color:var(--accent-amber)">To Order</th><th>Storage used</th><th>Fill rate</th><th>Own demand kept</th></tr></thead>
                     <tbody>${rows}</tbody>
-                </table>
+                </table></div>
                 ${rr ? `<div style="margin-top:0.5rem;font-size:0.66rem;color:var(--text-muted)"><b>Re-routed districts (capacity overflow):</b>${rr}</div>` : ''}
                 <div style="margin-top:0.5rem;font-size:0.64rem;color:var(--text-dim)">Fill rate = expected share of vials demanded in a cycle that the hub can supply. ${A.method}.</div>`;
         }
 
         async function runResilience() {
+            const btn = document.querySelector('button[onclick="runResilience()"]');
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculating N-1 Stress Test...';
+            }
             const card = document.getElementById('scenario-impact-card');
             const box = document.getElementById('scenario-impact-content');
             card.style.display = 'block';
-            box.innerHTML = '<i>Running N-1: each hub removed in turn, capacity searched by bisection (≈20–60 s)…</i>';
-            const maxT = parseFloat(document.getElementById('slider-golden-time').value);
-            const payload = {
-                country: document.getElementById('optimizer-country-select').value,
-                num_stockrooms: parseInt(document.getElementById('slider-k-hubs').value) || 8,
-                max_resupply_hours: maxT > 0 ? maxT : null,
-                service_level: parseFloat(document.getElementById('optimizer-service-level').value) || 0.99,
-                envenomings_per_death: parseFloat(document.getElementById('optimizer-rho').value),
-                initial_dose_vials: parseInt(document.getElementById('optimizer-dose').value),
-                surge_factor: parseFloat(document.getElementById('slider-surge-factor').value) || 1.0,
-                hub_capacity_pct: parseFloat(document.getElementById('alloc-cap-pct').value),
-                floor_courses: 1,
-                reserve_pct_national: parseFloat(document.getElementById('alloc-reserve-pct').value),
-                target_fill: 0.99
-            };
-            const res = await fetch('/api/resilience', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            const d = await res.json();
-            if (d.error) { box.innerHTML = `<div style="color:var(--accent-rose)">${d.error}</div>`; return; }
-            const rows = d.rows.map(r => `<tr>
-                <td><b>${r.failed_hub}</b><div style="font-size:0.62rem;color:var(--text-dim)">${r.state}</div></td>
-                <td style="color:${r.fill_rate_at_capacity < d.target_fill ? 'var(--accent-rose)' : 'var(--accent-emerald)'}">${(100 * r.fill_rate_at_capacity).toFixed(1)}%</td>
-                <td>${r.pct_courses_rerouted}%</td>
-                <td style="font-weight:800;color:var(--primary)">${r.capacity_pct_needed == null ? '>300%' : r.capacity_pct_needed + '%'}</td></tr>`).join('');
-            box.innerHTML = `
-                <div class="glass-card" style="padding:0.6rem;margin-bottom:0.6rem;text-align:center">
-                    <div style="font-size:0.65rem;color:var(--text-dim)">Capacity every hub needs so that ANY single failure keeps ${(100 * d.target_fill).toFixed(0)}% fill</div>
-                    <div style="font-size:1.4rem;font-weight:800;color:var(--accent-amber)">${d.required_capacity_pct == null ? 'not reachable ≤300%' : d.required_capacity_pct + '% of designed'}</div>
-                    <div style="font-size:0.65rem;color:var(--text-dim)">Worst case: losing ${d.worst_case_hub} → ${(100 * d.worst_case_fill_rate).toFixed(1)}% fill at ${d.capacity_pct_tested}% capacity</div>
-                </div>
-                <table class="manifest-table" style="width:100%;font-size:0.68rem">
-                    <thead><tr><th>Hub that fails</th><th>Fill at ${d.capacity_pct_tested}%</th><th>Rerouted</th><th>Capacity needed</th></tr></thead>
-                    <tbody>${rows}</tbody>
-                </table>
-                <div style="margin-top:0.5rem;font-size:0.64rem;color:var(--text-dim)">Other hubs stay at their designed sites; their districts absorb the failed hub's catchment by capacitated re-routing.</div>`;
+            box.innerHTML = '<div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin"></i> <span>Running N-1: stress testing each hub failure in turn (~10 s)...</span></div>';
+            try {
+                const maxT = parseFloat(document.getElementById('slider-golden-time').value);
+                const payload = {
+                    country: document.getElementById('optimizer-country-select').value,
+                    num_stockrooms: parseInt(document.getElementById('slider-k-hubs').value) || 8,
+                    max_resupply_hours: maxT > 0 ? maxT : null,
+                    service_level: parseFloat(document.getElementById('optimizer-service-level').value) || 0.99,
+                    envenomings_per_death: parseFloat(document.getElementById('optimizer-rho').value),
+                    initial_dose_vials: parseInt(document.getElementById('optimizer-dose').value),
+                    surge_factor: parseFloat(document.getElementById('slider-surge-factor').value) || 1.0,
+                    hub_capacity_pct: parseFloat(document.getElementById('alloc-cap-pct').value),
+                    floor_courses: 1,
+                    reserve_pct_national: parseFloat(document.getElementById('alloc-reserve-pct').value),
+                    target_fill: 0.99
+                };
+                const res = await fetch('/api/resilience', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const d = await res.json();
+                if (d.error) { box.innerHTML = `<div style="color:var(--accent-rose)">${d.error}</div>`; return; }
+                const rows = d.rows.map(r => `
+                    <tr style="cursor: pointer;" title="Click to simulate network re-routing when ${r.failed_hub} fails" onclick="simulateSingleOutage('${r.district_id}')">
+                        <td><b>${r.failed_hub}</b><div style="font-size:0.62rem;color:var(--text-dim)">${r.state}</div></td>
+                        <td style="color:${r.fill_rate_at_capacity < d.target_fill ? 'var(--accent-rose)' : 'var(--accent-emerald)'};font-weight:700">${(100 * r.fill_rate_at_capacity).toFixed(1)}%</td>
+                        <td>${r.pct_courses_rerouted}%</td>
+                        <td style="font-weight:800;color:var(--primary)">${r.capacity_pct_needed == null ? '>300%' : r.capacity_pct_needed + '%'}</td>
+                    </tr>`).join('');
+                box.innerHTML = `
+                    <div class="glass-card" style="padding:0.6rem;margin-bottom:0.6rem;text-align:center">
+                        <div style="font-size:0.65rem;color:var(--text-dim)">Capacity every hub needs so that ANY single failure keeps ${(100 * d.target_fill).toFixed(0)}% fill</div>
+                        <div style="font-size:1.4rem;font-weight:800;color:var(--accent-amber)">${d.required_capacity_pct == null ? 'not reachable ≤300%' : d.required_capacity_pct + '% of designed'}</div>
+                        <div style="font-size:0.65rem;color:var(--text-dim)">Worst case: losing ${d.worst_case_hub} → ${(100 * d.worst_case_fill_rate).toFixed(1)}% fill at ${d.capacity_pct_tested}% capacity</div>
+                    </div>
+                    <div class="table-scroll"><table class="manifest-table" style="width:100%;font-size:0.68rem">
+                        <thead><tr><th>Hub that fails</th><th>Fill at ${d.capacity_pct_tested}%</th><th>Rerouted</th><th>Capacity needed</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table></div>
+                    <div style="margin-top:0.5rem;font-size:0.64rem;color:var(--text-dim)"><i class="fa-solid fa-hand-pointer"></i> <b>Tip:</b> Click any row to view its exact re-routing and catchment flows on the map.</div>`;
+            } catch (err) {
+                box.innerHTML = `<div style="color:var(--accent-rose)"><b>Error running N-1 test:</b> ${err.message}</div>`;
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            }
+        }
+
+        function simulateSingleOutage(districtId) {
+            const sel = document.getElementById('scenario-outage-select');
+            if (sel) {
+                sel.value = districtId;
+                runCapacityAllocation();
+            }
         }
 
         let designedNetwork = null;
@@ -1966,7 +2457,7 @@
             const district = document.getElementById('species-district-select').value;
             const isCountryMode = !district || district === '__ALL__';
 
-            const url = isCountryMode 
+            const url = isCountryMode
                 ? `/api/species_by_country?country=${encodeURIComponent(country)}`
                 : `/api/species_by_district?country=${encodeURIComponent(country)}&district=${encodeURIComponent(district)}`;
 
@@ -1988,7 +2479,7 @@
                 const isCat1 = (sp.MEDICAL_IMPORTANCE_CATEGORY || '').includes('Highest');
                 const catBadge = isCat1 ? '<span class="danger-badge badge-cat1">WHO Category 1</span>' : '<span class="danger-badge badge-cat2">WHO Category 2</span>';
                 const asvBadge = sp.HAS_ANTIVENOM ? '<span class="danger-badge badge-success">Antivenom in portfolio</span>'
-                                                  : '<span class="danger-badge badge-danger">No procurable antivenom</span>';
+                    : '<span class="danger-badge badge-danger">No procurable antivenom</span>';
                 const presence = sp.district_presence_count != null
                     ? `<div>Districts: <b>${sp.district_presence_count}</b> (${sp.country_coverage_pct}%)</div>`
                     : `<div>Range overlap: <b>${sp.SPECIES_DISTRICT_OVERLAP_PCT}%</b> (${sp.PRESENCE_METHOD})</div>`;
@@ -2102,4 +2593,5 @@
         }
     </script>
 </body>
+
 </html>

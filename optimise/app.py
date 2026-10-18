@@ -29,17 +29,20 @@ try:
     from .demand import load_tables, country_demand
     from .solver import (evaluate_emergency_dispatch, load_config, optimise_country, p_sweep,
                          sensitivity)
-    from .allocation import allocate
+    from .allocation import allocate, n_minus_1
 except ImportError:
     import sys
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from optimise.demand import load_tables, country_demand  # type: ignore
     from optimise.solver import (evaluate_emergency_dispatch, load_config, optimise_country,  # type: ignore
                                  p_sweep, sensitivity)
-    from optimise.allocation import allocate  # type: ignore
+    from optimise.allocation import allocate, n_minus_1  # type: ignore
 
 template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 app = Flask(__name__, template_folder=template_dir)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
+
 
 _CACHE: Dict[str, Any] = {}
 _LOCK = threading.Lock()
@@ -108,7 +111,12 @@ def _err(e: Exception, code=400):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    resp = Response(render_template("index.html"), mimetype="text/html")
+    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
+    return resp
+
 
 
 @app.route("/api/countries", methods=["GET"])
@@ -270,14 +278,21 @@ def capacity_allocation():
         ov = _params_from_request(data)
         surge = float(data.get("surge_factor") or 1.0)
         disabled = data.get("disabled_hub_district") or None
-        sol = _solve(iso3, ov, surge, None, None)
-        active_hubs = [h for h in sol["selected_stockroom_hubs"] if h["district_id"] != disabled] if disabled else sol["selected_stockroom_hubs"]
-        if disabled:
-            sol = dict(sol)
-            sol["selected_stockroom_hubs"] = active_hubs
-
+        relocate = bool(data.get("relocate_failed_hub", False))
+        # True outage: keep the designed network and drop the failed hub (no replacement site).
+        # relocate_failed_hub=True re-optimises locations without it instead.
+        sol = _solve(iso3, ov, surge, disabled if relocate else None, None)
         # Capacity defaults to "as built": each hub sized to 100 % of its own optimal stock.
-        designed = [h["total_vials_to_store"] for h in active_hubs]
+        # "100 %" means the network AS BUILT for normal (surge = 1) demand. A surge must stress
+        # that fixed build; scaling capacity/supply with the surge would hide every shortage.
+        if abs(surge - 1.0) > 1e-9:
+            base = _solve(iso3, ov, 1.0, disabled if relocate else None, None)
+            built = {h["district_id"]: h["total_vials_to_store"] for h in base["selected_stockroom_hubs"]}
+            designed = [built.get(h["district_id"], h["total_vials_to_store"] / surge)
+                        for h in sol["selected_stockroom_hubs"]]
+        else:
+            designed = [h["total_vials_to_store"] for h in sol["selected_stockroom_hubs"]]
+        need = sum(h["total_vials_to_store"] for h in sol["selected_stockroom_hubs"])   # optimal stock for THIS demand
         cap = data.get("hub_capacity_vials")
         if data.get("hub_capacity_pct") not in (None, ""):
             cap = [max(0.0, float(data["hub_capacity_pct"]) / 100.0 * x) for x in designed]
@@ -287,14 +302,26 @@ def capacity_allocation():
             cap = float(cap)
         sup = data.get("national_supply_vials")
         if data.get("supply_pct") not in (None, ""):
-            sup = float(data["supply_pct"]) / 100.0 * sum(designed)
+            sup = float(data["supply_pct"]) / 100.0 * need
         elif sup in (None, "", 0, "0"):
             sup = None
         else:
             sup = float(sup)
         floor = int(data.get("floor_courses") if data.get("floor_courses") not in (None, "") else 1)
-        res = allocate(iso3, load_config(ov), [h["district_id"] for h in active_hubs],
-                       hub_capacity_vials=cap, national_supply_vials=sup, floor_courses=floor, surge_factor=surge)
+        hub_ids = [h["district_id"] for h in sol["selected_stockroom_hubs"]]
+        if disabled and not relocate:
+            if disabled not in hub_ids:
+                raise KeyError(f"hub {disabled} is not part of the designed network")
+            keep = [k for k, hid in enumerate(hub_ids) if hid != disabled]
+            hub_ids = [hub_ids[k] for k in keep]
+            if isinstance(cap, list):
+                cap = [cap[k] for k in keep]
+            sol = dict(sol)
+            sol["selected_stockroom_hubs"] = [h for h in sol["selected_stockroom_hubs"] if h["district_id"] != disabled]
+            sol["disabled_hub"] = disabled
+        res = allocate(iso3, load_config(ov), hub_ids,
+                       hub_capacity_vials=cap, national_supply_vials=sup, floor_courses=floor, surge_factor=surge,
+                       reserve_pct_national=float(data.get("reserve_pct_national") or 0.0))
     except KeyError as e:
         return _err(e, 404)
     except Exception as e:
@@ -307,70 +334,26 @@ def capacity_allocation():
 
 @app.route("/api/resilience", methods=["POST"])
 def resilience():
-    """N-1 resilience analysis: evaluate network performance if each hub fails in turn."""
+    """N-1 analysis: each hub fails in turn, the others stay fixed."""
     data = request.json or {}
     try:
         iso3 = _iso3(data.get("country", "India"))
         ov = _params_from_request(data)
         surge = float(data.get("surge_factor") or 1.0)
         sol = _solve(iso3, ov, surge, None, None)
-        cfg = load_config(ov)
-        hubs = sol["selected_stockroom_hubs"]
-        target_fill = float(data.get("target_fill") or 0.99)
-        test_cap_pct = float(data.get("hub_capacity_pct") or 100.0)
-        floor = int(data.get("floor_courses") if data.get("floor_courses") not in (None, "") else 1)
-
-        designed_map = {h["district_id"]: h["total_vials_to_store"] for h in hubs}
-
-        rows = []
-        for failed in hubs:
-            fid = failed["district_id"]
-            surviving = [h for h in hubs if h["district_id"] != fid]
-            surviving_ids = [h["district_id"] for h in surviving]
-            cap_tested = [designed_map[hid] * (test_cap_pct / 100.0) for hid in surviving_ids]
-
-            res_test = allocate(iso3, cfg, surviving_ids, hub_capacity_vials=cap_tested,
-                                floor_courses=floor, surge_factor=surge)
-            fill_test = res_test["summary"]["network_fill_rate"]
-            pct_rerouted = res_test["summary"]["pct_courses_rerouted"]
-
-            cap_needed = None
-            if fill_test >= target_fill:
-                cap_needed = int(test_cap_pct)
-            else:
-                for pct in [120, 140, 160, 180, 200, 250, 300]:
-                    cap_step = [designed_map[hid] * (pct / 100.0) for hid in surviving_ids]
-                    r_step = allocate(iso3, cfg, surviving_ids, hub_capacity_vials=cap_step,
-                                      floor_courses=floor, surge_factor=surge)
-                    if r_step["summary"]["network_fill_rate"] >= target_fill - 1e-4:
-                        cap_needed = pct
-                        break
-
-            rows.append({
-                "failed_hub": failed["district_name"],
-                "district_id": fid,
-                "state": failed["state_name"],
-                "fill_rate_at_capacity": round(fill_test, 4),
-                "pct_courses_rerouted": pct_rerouted,
-                "capacity_pct_needed": cap_needed,
-            })
-
-        worst = min(rows, key=lambda r: r["fill_rate_at_capacity"]) if rows else None
-        all_caps = [r["capacity_pct_needed"] for r in rows]
-        req_cap = None if any(c is None for c in all_caps) else (max(all_caps) if all_caps else None)
-
-        return jsonify(_clean({
-            "target_fill": target_fill,
-            "capacity_pct_tested": test_cap_pct,
-            "worst_case_hub": worst["failed_hub"] if worst else "",
-            "worst_case_fill_rate": worst["fill_rate_at_capacity"] if worst else 1.0,
-            "required_capacity_pct": req_cap,
-            "rows": rows
-        }))
+        H = sol["selected_stockroom_hubs"]
+        if len(H) < 2:
+            raise ValueError("N-1 analysis needs at least 2 hubs")
+        res = n_minus_1(iso3, load_config(ov), [h["district_id"] for h in H], [h["total_vials_to_store"] for h in H],
+                        capacity_pct=float(data.get("hub_capacity_pct") or 100.0),
+                        target_fill=float(data.get("target_fill") or 0.99), surge_factor=surge,
+                        floor_courses=int(data.get("floor_courses") or 1),
+                        reserve_pct_national=float(data.get("reserve_pct_national") or 0.0))
     except KeyError as e:
         return _err(e, 404)
     except Exception as e:
         return _err(e, 400)
+    return jsonify(_clean({"country": sol["country"], "iso3": iso3, "n_hubs": len(H), **res}))
 
 
 @app.route("/api/p_sweep", methods=["POST"])

@@ -150,3 +150,13 @@ def test_resilience_n_minus_1(client):
     assert d["required_capacity_pct"] is None or d["required_capacity_pct"] >= 100
     for row in d["rows"]:
         assert 0 < row["fill_rate_at_capacity"] <= 1
+
+
+def test_surge_stresses_fixed_build(client):
+    """Capacity/supply '100 %' = built for normal demand, so a 1.5x surge must lower the fill rate."""
+    body = {"country": "India", "num_stockrooms": 8, "hub_capacity_pct": 100, "supply_pct": 100}
+    base = client.post("/api/capacity_allocation", json=body).json["allocation"]["summary"]
+    surge = client.post("/api/capacity_allocation", json={**body, "surge_factor": 1.5}).json["allocation"]["summary"]
+    assert base["network_fill_rate"] == pytest.approx(1.0, abs=1e-6)
+    assert surge["network_fill_rate"] < 0.99
+    assert surge["vials_allocated"] == pytest.approx(base["vials_allocated"], rel=1e-3)   # same cold rooms
